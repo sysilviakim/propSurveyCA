@@ -40,7 +40,8 @@
     "Kmisc": {
       "Package": "Kmisc",
       "Version": "0.1.0",
-      "Source": "unknown",
+      "Source": "Repository",
+      "Repository": "MRAN",
       "Remotes": "ropensci/genderdata",
       "Hash": "c9aa08989768ef2a03a9ca4428184063"
     },
@@ -291,10 +292,10 @@
     },
     "dplyr": {
       "Package": "dplyr",
-      "Version": "1.0.2",
+      "Version": "1.0.4",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "d0509913b27ea898189ee664b6030dc2"
+      "Hash": "01c82e3b053eb7660a8ace8d932265b8"
     },
     "e1071": {
       "Package": "e1071",
@@ -739,10 +740,10 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.12.2",
+      "Version": "0.12.5",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "398cc1ea892e1aade66d1ecbb2874d24"
+      "Hash": "5c0cdb37f063c58cdab3c7e9fbb8bd2c"
     },
     "reprex": {
       "Package": "reprex",
@@ -900,10 +901,10 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.3.4",
+      "Version": "0.3.6",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "0bc90078aeee42f2520b1d0a33bd6758"
+      "Hash": "5cf1957f93076c19fdc81d01409d240b"
     },
     "viridisLite": {
       "Package": "viridisLite",
