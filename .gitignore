@@ -41,3 +41,6 @@ vignettes/*.pdf
 # Survey data needs work before going public
 data/raw/*
 
+# Dropbox
+desktop.ini
+
