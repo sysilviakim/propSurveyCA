@@ -64,7 +64,7 @@ cal_survey <- cal_survey %>%
     ),
     ## Collapsing Party ID into Dem, Rep, or Other variable 
     party = ifelse(
-      pid3 != "Dem" & pid != "Rep", "Other", pid3
+      pid3 != "Dem" & pid3 != "Rep", "Other", pid3
     ),
     pid7 = factor(
       pid7,
