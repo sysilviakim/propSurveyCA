@@ -44,3 +44,6 @@ data/raw/*
 # Dropbox
 desktop.ini
 
+# Old and temporary files
+R/old/*
+R/eda/*

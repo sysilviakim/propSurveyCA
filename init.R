@@ -18,5 +18,8 @@ install.packages("assertthat")
 install.packages("styler")
 install.packages("janitor")
 install.packages("fst")
+install.packages("here")
 
 renv::snapshot()
+
+dir.create(here::here("tab"))
