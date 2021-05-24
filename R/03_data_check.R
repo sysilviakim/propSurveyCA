@@ -139,7 +139,7 @@ race_16<- race_16[-1,] %>% t()
 race_tab<- rbind(race_15, race_16)
 
 
-combined_vars<- rbind(gender_tab, race_tab)
+combined_vars<- cbind(gender_tab, race_tab)
 colnames(combined_vars)<- list("Gender: Females", "Gender: Males", "Race: White", 
                                "Race: Black", "Race: Hispanic", "Race: Asian", 
                                "Race: Other")
@@ -156,6 +156,12 @@ combined_vars <- combined_vars %>% t() %>% as.data.frame()
 kbl(combined_vars, booktabs= TRUE, label = 
       "Responses on Prop. 15 and 16 by Gender and Race", format = "latex") %>%
   save_kable("combined_dem_vars.tex")
+
+## Version with Prop 15/16 being just Yes and No 
+combined_dem <- combined_vars[-c(3:6,9:12),]
+kbl(combined_dem, booktabs= TRUE, label = 
+      "Votes on Prop. 15 and 16 by Gender and Race", format = "latex") %>%
+  save_kable("combined_dem.tex")
 ###################### Political Vars #########################################
 # Party ID 
 party_id<- tabyl(cal_survey, prop_15, pid3) %>% as.data.frame()
@@ -179,4 +185,8 @@ kbl(party_id_both, booktabs = TRUE, label =
       "Responses on Prop. 15 and 16 by Party ID", format = "latex") %>% 
   save_kable("partyid_table.tex")
 
-
+## Version with Prop 15/16 being just Yes and No 
+party_table <- party_id_both[-c(3:6,9:12),]
+kbl(party_table, booktabs = TRUE, label = 
+      "Votes on Prop. 15 and 16 by Party ID", format = "latex") %>% 
+  save_kable("party_table_coll.tex")
