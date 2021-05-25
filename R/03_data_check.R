@@ -89,11 +89,16 @@ age_16 <- age_16[-1,] %>% t()
 
 table_age<- rbind(age_15, age_16) %>% as.data.frame()
 
+age_table <- table_age[-c(3:6,9:12),]
+
 kbl(age_table, booktabs = TRUE, label = 
-      "Responses on Prop. 15 and 16 by Age Groups", 
+      "Votes on Prop. 15 and 16 by Age Groups", 
     format = "latex") %>% save_kable("age_table.tex")
 
-
+print.xtable(xtable(age_table, 
+                    caption = "Vote on Prop. 15 and 16 by Age Groups", auto = TRUE),
+             type = "latex", file = "age_table.tex", 
+             getOption("xtable.booktabs", TRUE))
 ######################################### Demographic Vars #####################
 
 ### Gender and Race
@@ -162,6 +167,11 @@ combined_dem <- combined_vars[-c(3:6,9:12),]
 kbl(combined_dem, booktabs= TRUE, label = 
       "Votes on Prop. 15 and 16 by Gender and Race", format = "latex") %>%
   save_kable("combined_dem.tex")
+
+print.xtable(xtable(combined_dem, 
+          caption ="Votes on Prop. 15 and 16 by Gender and Race", auto = TRUE),
+        type = "latex", file = "combined_dem.tex", getOption("xtable.booktabs",
+                                                                  TRUE))
 ###################### Political Vars #########################################
 # Party ID 
 party_id<- tabyl(cal_survey, prop_15, pid3) %>% as.data.frame()
@@ -185,8 +195,26 @@ kbl(party_id_both, booktabs = TRUE, label =
       "Responses on Prop. 15 and 16 by Party ID", format = "latex") %>% 
   save_kable("partyid_table.tex")
 
+
 ## Version with Prop 15/16 being just Yes and No 
 party_table <- party_id_both[-c(3:6,9:12),]
-kbl(party_table, booktabs = TRUE, label = 
-      "Votes on Prop. 15 and 16 by Party ID", format = "latex") %>% 
+kbl(party_table, booktabs = TRUE, label = opts_chunk$get('label_party'), format = "html") %>% 
   save_kable("party_table_coll.tex")
+
+print.xtable(xtable(party_table, caption = "Votes on Prop. 15 and 16 by Party ID", 
+                    auto = TRUE), type = "latex", file = "party_table.tex",
+             booktabs = getOption("xtable.booktabs", TRUE))
+             
+
+party_table$Dem <- party_table$Dem %>% as.numeric()
+party_table$Rep <- party_table$Rep %>% as.numeric()
+party_table$Ind <- party_table$Ind %>% as.numeric()
+party_table$`Not Sure` <- party_table$`Not Sure` %>% as.numeric()
+party_table$Other <- party_table$Other %>% as.numeric()
+library(tidyselect)
+party_tbl <- party_table %>% adorn_percentages("row",na.rm = TRUE,
+                                               party_table$Dem) %>% 
+  adorn_pct_formatting(digits = 2) %>% adorn_ns(position = "front")
+
+opts_chunk$get('label')
+label_party <- "Votes on Prop. 15 and 16 by Party ID"

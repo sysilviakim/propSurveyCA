@@ -19,6 +19,12 @@ library(survey)
 library(knitr)
 library(kableExtra)
 library(tableone)
+library(ggplot2)
+library(GGally)
+library(jtools)
+library(ggstance)
+library(broom)
+library(broom.helpers)
 
 # Subdirectories ===============================================================
 if (!dir.exists(here("R", "eda"))) {
