@@ -59,5 +59,5 @@ print(plot_16)
 
 
 ggsave("plot_all_16.png", plot_16)
-ggsave("plot_all_16.png", plot_15)
+ggsave("plot_all_15.png", plot_15)
 

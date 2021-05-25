@@ -204,14 +204,18 @@ kbl(party_table, booktabs = TRUE, label = opts_chunk$get('label_party'), format 
 print.xtable(xtable(party_table, caption = "Votes on Prop. 15 and 16 by Party ID", 
                     auto = TRUE), type = "latex", file = "party_table.tex",
              booktabs = getOption("xtable.booktabs", TRUE))
-             
+
+
+
+# adding percentages, maybe - working on 
 
 party_table$Dem <- party_table$Dem %>% as.numeric()
 party_table$Rep <- party_table$Rep %>% as.numeric()
 party_table$Ind <- party_table$Ind %>% as.numeric()
 party_table$`Not Sure` <- party_table$`Not Sure` %>% as.numeric()
 party_table$Other <- party_table$Other %>% as.numeric()
-library(tidyselect)
+
+
 party_tbl <- party_table %>% adorn_percentages("row",na.rm = TRUE,
                                                party_table$Dem) %>% 
   adorn_pct_formatting(digits = 2) %>% adorn_ns(position = "front")
