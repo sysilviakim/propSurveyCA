@@ -26,6 +26,7 @@ library(ggstance)
 library(broom)
 library(broom.helpers)
 library(tidyselect)
+library(scales)
 
 # Subdirectories ===============================================================
 if (!dir.exists(here("R", "eda"))) {
