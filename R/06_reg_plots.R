@@ -67,9 +67,9 @@ plot_16 <- ggplot(all_16_reg, aes(term, estimate, color = term)) + geom_point() 
                                  "Other" = "gray24")) +
   geom_hline(yintercept = 0) +
   scale_y_continuous(
-    limits = c(-.75, 1.5), breaks = seq(1.5, -.75, by = -.15),
+    limits = c(-.75, 1.8), breaks = seq(1.8, -.75, by = -.25),
     labels =
-      scales::number_format(accuracy = 0.01)
+      scales::number_format(accuracy = 0.01), oob = rescale_none
   ) +
   annotate("rect", fill = "lightgray", alpha = 0.4) + 
   ggtitle("Model 3, Prop. 16 and Race")
@@ -78,7 +78,7 @@ plot_16 <- ggplot(all_16_reg, aes(term, estimate, color = term)) + geom_point() 
 print(plot_16)
 
 
-ggsave("plot_all_16_up.png", plot_16)
-ggsave("plot_all_15_up.png", plot_15)
+ggsave("plot16_up.png", plot_16)
+ggsave("plot15_up.png", plot_15)
 
 
