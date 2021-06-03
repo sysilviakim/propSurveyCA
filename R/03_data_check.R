@@ -160,9 +160,9 @@ race_tab<- rbind(race_15, race_16)
 
 
 combined_vars<- cbind(gender_tab, race_tab)
-colnames(combined_vars)<- list("Gender: Females", "Gender: Males", "Race: White", 
-                               "Race: Black", "Race: Hispanic", "Race: Asian", 
-                               "Race: Other")
+colnames(combined_vars)<- list("Females", "Males", "White", 
+                               "Black", "Hispanic", "Asian", 
+                               "Other")
 combined_vars<- combined_vars %>% t()
 colnames(combined_vars) <- list("Prop. 15 - Yes", "Prop. 15 - No", 
                                 "Prop. 15 - Didn't Vote on it", 
@@ -183,13 +183,13 @@ combined_dem <- combined_vars[-c(3:6,9:12),]
 combined_list <- c("yes", "no", "yes", "no")
 combined <- cbind(combined_list, combined_dem)
 
-combined$`Gender: Females` <- as.numeric(combined$`Gender: Females`)
-combined$`Gender: Males`<- as.numeric(combined$`Gender: Males`)
-combined$`Race: White` <- as.numeric(combined$`Race: White`)
-combined$`Race: Black` <- as.numeric(combined$`Race: Black`)
-combined$`Race: Hispanic` <- as.numeric(combined$`Race: Hispanic`)
-combined$`Race: Asian` <- as.numeric(combined$`Race: Asian`)
-combined$`Race: Other` <- as.numeric(combined$`Race: Other`)
+combined$Females <- as.numeric(combined$Females)
+combined$Males<- as.numeric(combined$Males)
+combined$White <- as.numeric(combined$White)
+combined$Black <- as.numeric(combined$Black)
+combined$Hispanic <- as.numeric(combined$Hispanic)
+combined$Asian <- as.numeric(combined$Asian)
+combined$Other <- as.numeric(combined$Other)
 
 combined_dem_vars <- combined %>% adorn_percentages("col") %>% 
   adorn_pct_formatting(digits = 2) %>% adorn_ns(position = "front")
@@ -203,8 +203,7 @@ combined_dem_vars <- combined_dem_vars[,-1]
 
 print.xtable(xtable(combined_dem_vars, 
           caption ="Votes on Prop. 15 and 16 by Gender and Race", auto = TRUE),
-        type = "latex", file = "combined_dem.tex", getOption("xtable.booktabs",
-                                                                  TRUE))
+        type = "latex", file = "combined_dem_mod.tex")
 ###################### Political Vars #########################################
 # Party ID 
 party_id<- tabyl(cal_survey, prop_15, pid3) %>% as.data.frame()
