@@ -2,14 +2,16 @@ source(here::here("R", "utilities.R"))
 load(here("data", "tidy", "cal_survey_wrangled.Rda"))
 
 # Reused setups ================================================================
-col_labels <- c(prop_15 = 15, prop_16 = 16) %>%
+prop_labels <- c(prop_15 = 15, prop_16 = 16)
+col_labels <- prop_labels %>%
   map(
     ~ c(
       paste0("Prop. ", .x, ": Yes"),
-      paste0("Prop. ", .x, ": No"),
-      paste0("Prop. ", .x, ": Didn't vote on it"),
-      paste0("Prop. ", .x, ": Skipped"),
-      paste0("Prop. ", .x, ": NA")
+      paste0("Prop. ", .x, ": No") # ,
+      # paste0("Prop. ", .x, ": Didn't vote on it"),
+      # paste0("Prop. ", .x, ": Skipped"),
+      # paste0("Prop. ", .x, ": Not asked"),
+      # paste0("Prop. ", .x, ": NA")
     )
   )
 
@@ -26,58 +28,31 @@ prop(cal_survey, "race5")
 # Creating Descriptive Tables ==================================================
 
 ## Demographic Vars: Age =======================================================
-
-# min (18), qrt1 (39), med (56), qt3 (65), max (90)
-# gen cut offs by min, max age
-# silent gen: 1928-45, boomers: 46-64, gen x: 65-80, mil: 81-96, gen z: 97-'12
-
-age_15 <- tabyl(dat = cal_survey, prop_15, age_groups, type = "f") %>%
-  as.data.frame()
-colnames(age_15) <- list(
-  "Vote", "Gen Z (18-24)", "Milennial (25-40)",
-  "Gen X (41-56)", "Boomer (57-75)", "Silent (75+)"
-)
-age_15 <- age_15 %>% t()
-colnames(age_15) <- col_labels$prop_15
-age_15 <- age_15[-1, ] %>% t()
-
-age_16 <- tabyl(dat = cal_survey, prop_16, age_groups, type = "f") %>%
-  as.data.frame()
-colnames(age_16) <- list(
-  "Vote", "Gen Z (18-24)", "Milennial (25-40)",
-  "Gen X (41-56)", "Boomer (57-75)", "Silent (75+)"
-)
-age_16 <- age_16 %>% t()
-colnames(age_16) <- col_labels$prop_16
-age_16 <- age_16[-1, ] %>% t()
-
-table_age <- rbind(age_15, age_16) %>% as.data.frame()
-
-age_table <- table_age[-c(3:6, 9:12), ]
-
-age_list <- c("yes", "no", "yes", "no")
-age_t <- cbind(age_list, age_table)
-
-age_t$`Gen Z (18-24)` <- as.numeric(age_t$`Gen Z (18-24)`)
-age_t$`Milennial (25-40)` <- as.numeric(age_t$`Milennial (25-40)`)
-age_t$`Gen X (41-56)` <- as.numeric(age_t$`Gen X (41-56)`)
-age_t$`Boomer (57-75)` <- as.numeric(age_t$`Boomer (57-75)`)
-age_t$`Silent (75+)` <- as.numeric(age_t$`Silent (75+)`)
-
-age_table_pct <- age_t %>%
-  adorn_percentages("col") %>%
-  adorn_pct_formatting(digits = 2) %>%
-  adorn_ns("front")
-
-age_table_pct <- age_table_pct[, -1]
+temp <- prop_labels %>%
+  map_dfr(
+    ~ {
+      tabyl(
+        dat = cal_survey,
+        !!as.name(paste0("prop_", .x)),
+        age_groups,
+        type = "f"
+      ) %>%
+        mutate(across(where(is.factor), as.character)) %>%
+        adorn_percentages("col") %>%
+        adorn_pct_formatting(digits = 2) %>%
+        adorn_ns("front") %>%
+        filter(grepl("Yes$|No$", !!as.name(paste0("prop_", .x)))) %>%
+        rename(Vote = !!as.name(paste0("prop_", .x)))
+    }
+  ) %>%
+  mutate(Vote = col_labels %>% unlist())
 
 print.xtable(
-  xtable(
-    age_table_pct,
-    caption = "Vote on Prop. 15 and 16 by Age Groups", auto = TRUE
-  ),
-  type = "latex", file = here("tab", "age_table.tex"),
-  TRUE
+  xtable(temp, caption = "By Age Groups", auto = TRUE),
+  file = here("tab", "age_table.tex"),
+  booktabs = TRUE,
+  floating = FALSE,
+  include.rownames = FALSE
 )
 
 ## Demographic Vars: Gender ====================================================
