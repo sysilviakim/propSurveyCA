@@ -11,49 +11,13 @@ prop(cal_survey, c("prop_15", "prop_16"))
 ## Covariates
 prop(cal_survey, "race5")
 
-race <- length(cal_survey$race[cal_survey$race == "Hispanic"]) / nrow(cal_survey)
-race4 <- length(cal_survey$race4[cal_survey$race4 == "Hispanic"]) / nrow(cal_survey)
-race5 <- length(cal_survey$race5[cal_survey$race5 == "Hispanic"]) / nrow(cal_survey)
-hisp <- length(cal_survey$hispanic[cal_survey$hispanic == "Yes"]) / nrow(cal_survey)
+# Creating Descriptive Tables ==================================================
 
-race1 <- list(race, race4, race5, hisp)
-hisp_vars <- race1 %>%
-  as.data.frame() %>%
-  rename(
-    "Race" = "X0.180489731437599", "Race4" = "X0.180489731437599.1",
-    "Race5" = "X0.180489731437599.2", "Hispanic" = "X0.225118483412322"
-  )
-hisp_var_comp <- xtable(hisp_vars)
-print.xtable(hisp_var_comp, file = "hisp_var_comp.tex")
+## Demographic Vars: Age =======================================================
 
-# Comparing `race` and `party` variable ========================================
-
-party_race_comp <- xtable(table(cal_survey$party, cal_survey$race5))
-print.xtable(party_race_comp, file = "party_race_comp.tex")
-
-# Making the descriptive table in Appendix =====================================
-
-# still tweaking this to make it look cleaner
-dput(names(cal_survey))
-
-myVars <- c(
-  "prop_15", "prop_16", "age", "gender", "race5", "educ", "income3",
-  "ca_region", "pid3", "elec_int_state", "covid_response"
-)
-catVars <- c(
-  "prop_15", "prop_16", "gender", "race5", "educ", "income3",
-  "ca_region", "pid3", "elec_int_state", "covid_response"
-)
-desc_table <- CreateTableOne(vars = myVars, data = cal_survey, factorVars = catVars)
-summ_table <- print(desc_table, printToggle = FALSE, noSpaces = TRUE)
-desc_summ_table <- kbl(summ_table, booktabs = TRUE, format = "latex", longtable = TRUE)
-save_kable(desc_summ_table, file = "desc_summ_table.tex")
-
-
-######################## Age Table #############################################
 # min (18), qrt1 (39), med (56), qt3 (65), max (90)
 # gen cut offs by min, max age
-# silent gen: 1928-45, boomers: 46-64, gen x: 65-80, mil: 81-96, genz: 97-'12
+# silent gen: 1928-45, boomers: 46-64, gen x: 65-80, mil: 81-96, gen z: 97-'12
 
 cal_survey$age_groups <- findInterval(cal_survey$age, c(18, 25, 41, 57, 76))
 
@@ -107,20 +71,16 @@ age_table_pct <- age_t %>%
 
 age_table_pct <- age_table_pct[, -1]
 
-#
-# kbl(age_table, booktabs = TRUE, label =
-#       "Votes on Prop. 15 and 16 by Age Groups",
-#     format = "latex") %>% save_kable("age_table.tex")
-
-print.xtable(xtable(age_table_pct,
-  caption = "Vote on Prop. 15 and 16 by Age Groups", auto = TRUE
-),
-type = "latex", file = "age_table.tex",
-getOption("xtable.booktabs", TRUE)
+print.xtable(
+  xtable(
+    age_table_pct,
+    caption = "Vote on Prop. 15 and 16 by Age Groups", auto = TRUE
+  ),
+  type = "latex", file = here("tab", "age_table.tex"),
+  TRUE
 )
-######################################### Demographic Vars #####################
 
-### Gender and Race
+## Demographic Vars: Gender ====================================================
 gen_15 <- tabyl(cal_survey, prop_15, gender) %>% as.data.frame()
 colnames(gen_15) <- list("Vote", "Females", "Males")
 gen_15 <- gen_15 %>% t()
@@ -145,7 +105,7 @@ gen_16 <- gen_16[-1, ] %>% t()
 
 gender_tab <- rbind(gen_15, gen_16)
 
-
+## Demographic Vars: Race ======================================================
 race_15 <- tabyl(cal_survey, prop_15, race5) %>% as.data.frame()
 colnames(race_15) <- list("Vote", "White", "Black", "Hispanic", "Asian", "Other")
 race_15 <- race_15 %>% t()
@@ -195,7 +155,7 @@ kbl(combined_vars,
   booktabs = TRUE, label =
     "Responses on Prop. 15 and 16 by Gender and Race", format = "latex"
 ) %>%
-  save_kable("combined_dem_vars.tex")
+  save_kable(here("tab", "combined_dem_vars.tex"))
 
 ## Version with Prop 15/16 being just Yes and No
 combined_dem <- combined_vars[-c(3:6, 9:12), ]
@@ -218,18 +178,16 @@ combined_dem_vars <- combined %>%
 
 combined_dem_vars <- combined_dem_vars[, -1]
 
-
-# # kbl(combined_dem, booktabs= TRUE, label =
-#       "Votes on Prop. 15 and 16 by Gender and Race", format = "latex") %>%
-#   save_kable("combined_dem.tex")
-
-print.xtable(xtable(combined_dem_vars,
-  caption = "Votes on Prop. 15 and 16 by Gender and Race", auto = TRUE
-),
-type = "latex", file = "combined_dem_mod.tex"
+print.xtable(
+  xtable(
+    combined_dem_vars,
+    caption = "Votes on Prop. 15 and 16 by Gender and Race", auto = TRUE
+  ),
+  type = "latex", file = here("tab", "combined_dem_mod.tex")
 )
-###################### Political Vars #########################################
-# Party ID
+
+## Political Vars: Party ID ====================================================
+
 party_id <- tabyl(cal_survey, prop_15, pid3) %>% as.data.frame()
 colnames(party_id) <- list("Vote", "Dem", "Rep", "Ind", "Other", "Not Sure")
 party_id <- party_id %>% t()
@@ -253,21 +211,16 @@ party_id_16 <- party_id_16[-1, ] %>% t()
 party_id_both <- rbind(party_id, party_id_16) %>% as.data.frame()
 
 ### all responses, including don't know, didn't vote etc
-kbl(party_id_both,
+kbl(
+  party_id_both,
   booktabs = TRUE, label =
     "Responses on Prop. 15 and 16 by Party ID", format = "latex"
 ) %>%
-  save_kable("partyid_table.tex")
+  save_kable(here("tab", "partyid_table.tex"))
 
 
 ## Version with Prop 15/16 being just Yes and No + Percentages
 party_table <- party_id_both[-c(3:6, 9:12), ]
-
-
-# kbl(party_table, booktabs = TRUE, label = opts_chunk$get('label_party'), format = "html") %>%
-#   save_kable("party_table_coll.tex")
-
-
 
 # adding percentages
 party_line <- c("yes", "no", "yes", "no")
@@ -287,10 +240,12 @@ party_tbl <- party_table %>%
 party_tbl <- party_tbl[, -1]
 
 
-print.xtable(xtable(party_tbl,
-  caption = "Votes on Prop. 15 and 16 by Party ID",
-  auto = TRUE
-),
-type = "latex", file = "party_table.tex",
-booktabs = getOption("xtable.booktabs", TRUE)
+print.xtable(
+  xtable(
+    party_tbl,
+    caption = "Votes on Prop. 15 and 16 by Party ID",
+    auto = TRUE
+  ),
+  type = "latex", file = here("tab", "party_table.tex"),
+  booktabs = TRUE
 )
