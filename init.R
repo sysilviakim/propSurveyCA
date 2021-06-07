@@ -8,7 +8,7 @@ install_github(
 )
 Kmisc::proj_skeleton()
 
-# Library installation
+# install.packages installation
 install.packages("plyr")
 install.packages("tidyverse")
 install.packages("lubridate")
@@ -17,8 +17,21 @@ install.packages("here")
 install.packages("assertthat")
 install.packages("styler")
 install.packages("janitor")
-install.packages("fst")
 install.packages("here")
+
+install.packages("margins")
+install.packages("stargazer")
+install.packages("xtable")
+install.packages("survey")
+install.packages("knitr")
+install.packages("kableExtra")
+install.packages("tableone")
+install.packages("GGally")
+install.packages("jtools")
+install.packages("ggstance")
+install.packages("broom")
+install.packages("broom.helpers")
+install.packages("scales")
 
 renv::snapshot()
 
