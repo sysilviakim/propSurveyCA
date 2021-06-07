@@ -22,6 +22,22 @@ prop(cal_survey, "prop_15")
 prop(cal_survey, "prop_16")
 prop(cal_survey, c("prop_15", "prop_16"))
 
+## Rough conditional statements
+pretty_condprob(cal_survey, "prop_15", "Yes", "race5", "Hispanic")
+pretty_condprob(cal_survey, "prop_15", "Yes", "race5", "White")
+pretty_condprob(cal_survey, "prop_16", "Yes", "race5", "Hispanic")
+pretty_condprob(cal_survey, "prop_16", "Yes", "race5", "White")
+
+## Partisan distribution
+prop(cal_survey, "race5")
+pretty_condprob(cal_survey, "pid3", "Dem", "race5", "Hispanic")
+pretty_condprob(cal_survey, "pid3", "Dem", "race5", "White")
+pretty_condprob(cal_survey, "pid3", "Dem", "race5", "Asian")
+pretty_condprob(cal_survey, "pid3", "Dem", "race5", "Black")
+
+pretty_condprob(cal_survey, "pid3", "Rep", "race5", "Hispanic")
+pretty_condprob(cal_survey, "pid3", "Rep", "race5", "White")
+
 ## Covariates
 prop(cal_survey, "race5")
 
