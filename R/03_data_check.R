@@ -1,6 +1,18 @@
 source(here::here("R", "utilities.R"))
 load(here("data", "tidy", "cal_survey_wrangled.Rda"))
 
+# Reused setups ================================================================
+col_labels <- c(prop_15 = 15, prop_16 = 16) %>%
+  map(
+    ~ c(
+      paste0("Prop. ", .x, ": Yes"),
+      paste0("Prop. ", .x, ": No"),
+      paste0("Prop. ", .x, ": Didn't vote on it"),
+      paste0("Prop. ", .x, ": Skipped"),
+      paste0("Prop. ", .x, ": NA")
+    )
+  )
+
 # Checking for NA values =======================================================
 
 ## Dependent variables
@@ -19,8 +31,6 @@ prop(cal_survey, "race5")
 # gen cut offs by min, max age
 # silent gen: 1928-45, boomers: 46-64, gen x: 65-80, mil: 81-96, gen z: 97-'12
 
-cal_survey$age_groups <- findInterval(cal_survey$age, c(18, 25, 41, 57, 76))
-
 age_15 <- tabyl(dat = cal_survey, prop_15, age_groups, type = "f") %>%
   as.data.frame()
 colnames(age_15) <- list(
@@ -28,12 +38,7 @@ colnames(age_15) <- list(
   "Gen X (41-56)", "Boomer (57-75)", "Silent (75+)"
 )
 age_15 <- age_15 %>% t()
-colnames(age_15) <- list(
-  "Prop. 15 - Yes", "Prop. 15 - No",
-  "Prop. 15 - Didn't Vote on it",
-  "Prop. 15 - Not asked", "Prop. 15 - Skipped",
-  "Prop. 15 - NA's"
-)
+colnames(age_15) <- col_labels$prop_15
 age_15 <- age_15[-1, ] %>% t()
 
 age_16 <- tabyl(dat = cal_survey, prop_16, age_groups, type = "f") %>%
@@ -43,12 +48,7 @@ colnames(age_16) <- list(
   "Gen X (41-56)", "Boomer (57-75)", "Silent (75+)"
 )
 age_16 <- age_16 %>% t()
-colnames(age_16) <- list(
-  "Prop. 16 - Yes", "Prop. 16 - No",
-  "Prop. 16 - Didn't Vote on it",
-  "Prop. 16 - Not asked", "Prop. 16 - Skipped",
-  "Prop. 16 - NA's"
-)
+colnames(age_16) <- col_labels$prop_16
 age_16 <- age_16[-1, ] %>% t()
 
 table_age <- rbind(age_15, age_16) %>% as.data.frame()
@@ -84,23 +84,13 @@ print.xtable(
 gen_15 <- tabyl(cal_survey, prop_15, gender) %>% as.data.frame()
 colnames(gen_15) <- list("Vote", "Females", "Males")
 gen_15 <- gen_15 %>% t()
-colnames(gen_15) <- list(
-  "Prop. 15 - Yes", "Prop. 15 - No",
-  "Prop. 15 - Didn't Vote on it",
-  "Prop. 15 - Not asked", "Prop. 15 - Skipped",
-  "Prop. 15 - NA's"
-)
+colnames(gen_15) <- col_labels$prop_15
 gen_15 <- gen_15[-1, ] %>% t()
 
 gen_16 <- tabyl(cal_survey, prop_16, gender) %>% as.data.frame()
 colnames(gen_16) <- list("Vote", "Females", "Males")
 gen_16 <- gen_16 %>% t()
-colnames(gen_16) <- list(
-  "Prop. 16 - Yes", "Prop. 16 - No",
-  "Prop. 16 - Didn't Vote on it",
-  "Prop. 16 - Not asked", "Prop. 16 - Skipped",
-  "Prop. 16 - NA's"
-)
+colnames(gen_16) <- col_labels$prop_16
 gen_16 <- gen_16[-1, ] %>% t()
 
 gender_tab <- rbind(gen_15, gen_16)
@@ -109,23 +99,13 @@ gender_tab <- rbind(gen_15, gen_16)
 race_15 <- tabyl(cal_survey, prop_15, race5) %>% as.data.frame()
 colnames(race_15) <- list("Vote", "White", "Black", "Hispanic", "Asian", "Other")
 race_15 <- race_15 %>% t()
-colnames(race_15) <- list(
-  "Prop. 15 - Yes", "Prop. 15 - No",
-  "Prop. 15 - Didn't Vote on it",
-  "Prop. 15 - Not asked", "Prop. 15 - Skipped",
-  "Prop. 15 - NA's"
-)
+colnames(race_15) <- col_labels$prop_15
 race_15 <- race_15[-1, ] %>% t()
 
 race_16 <- tabyl(cal_survey, prop_16, race5) %>% as.data.frame()
 colnames(race_16) <- list("Vote", "White", "Black", "Hispanic", "Asian", "Other")
 race_16 <- race_16 %>% t()
-colnames(race_16) <- list(
-  "Prop. 16 - Yes", "Prop. 16 - No",
-  "Prop. 16 - Didn't Vote on it",
-  "Prop. 16 - Not asked", "Prop. 16 - Skipped",
-  "Prop. 16 - NA's"
-)
+colnames(race_16) <- col_labels$prop_16
 race_16 <- race_16[-1, ] %>% t()
 
 race_tab <- rbind(race_15, race_16)
@@ -133,27 +113,19 @@ race_tab <- rbind(race_15, race_16)
 
 combined_vars <- cbind(gender_tab, race_tab)
 colnames(combined_vars) <- list(
-  "Females", "Males", "White",
+  "Female", "Male", "White",
   "Black", "Hispanic", "Asian",
   "Other"
 )
 combined_vars <- combined_vars %>% t()
-colnames(combined_vars) <- list(
-  "Prop. 15 - Yes", "Prop. 15 - No",
-  "Prop. 15 - Didn't Vote on it",
-  "Prop. 15 - Not asked", "Prop. 15 - Skipped",
-  "Prop. 15 - NA's", "Prop. 16 - Yes", "Prop. 16 - No",
-  "Prop. 16 - Didn't Vote on it",
-  "Prop. 16 - Not asked", "Prop. 16 - Skipped",
-  "Prop. 16 - NA's"
-)
+colnames(combined_vars) <- col_labels %>% unlist()
 combined_vars <- combined_vars %>%
   t() %>%
   as.data.frame()
 
 kbl(combined_vars,
-  booktabs = TRUE, label =
-    "Responses on Prop. 15 and 16 by Gender and Race", format = "latex"
+  booktabs = TRUE,
+  label = "Responses on Prop. 15 and 16 by Gender and Race", format = "latex"
 ) %>%
   save_kable(here("tab", "combined_dem_vars.tex"))
 
@@ -191,22 +163,12 @@ print.xtable(
 party_id <- tabyl(cal_survey, prop_15, pid3) %>% as.data.frame()
 colnames(party_id) <- list("Vote", "Dem", "Rep", "Ind", "Other", "Not Sure")
 party_id <- party_id %>% t()
-colnames(party_id) <- list(
-  "Prop. 15 - Yes", "Prop. 15 - No",
-  "Prop. 15 - Didn't Vote on it",
-  "Prop. 15 - Not asked", "Prop. 15 - Skipped",
-  "Prop. 15 - NA's"
-)
+colnames(party_id) <- col_labels$prop_15
 party_id <- party_id[-1, ] %>% t()
 party_id_16 <- tabyl(cal_survey, prop_16, pid3) %>% as.data.frame()
 colnames(party_id_16) <- list("Vote", "Dem", "Rep", "Ind", "Other", "Not Sure")
 party_id_16 <- party_id_16 %>% t()
-colnames(party_id_16) <- list(
-  "Prop. 16 - Yes", "Prop. 16 - No",
-  "Prop. 16 - Didn't Vote on it",
-  "Prop. 16 - Not asked", "Prop. 16 - Skipped",
-  "Prop. 16 - NA's"
-)
+colnames(party_id_16) <- col_labels$prop_16
 party_id_16 <- party_id_16[-1, ] %>% t()
 party_id_both <- rbind(party_id, party_id_16) %>% as.data.frame()
 
@@ -231,14 +193,12 @@ party_table$Ind <- party_table$Ind %>% as.numeric()
 party_table$`Not Sure` <- party_table$`Not Sure` %>% as.numeric()
 party_table$Other <- party_table$Other %>% as.numeric()
 
-
 party_tbl <- party_table %>%
   adorn_percentages("col") %>%
   adorn_pct_formatting(digits = 2) %>%
   adorn_ns(position = "front")
 
 party_tbl <- party_tbl[, -1]
-
 
 print.xtable(
   xtable(
