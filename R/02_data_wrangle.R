@@ -9,6 +9,16 @@ cal_survey <- cal_survey %>%
       levels = c(1, 2),
       labels = c("F", "M")
     ),
+    ## silent gen: 28-45, boomer: 46-64, gen x: 65-80, mil: 81-96, gen z: 97-'12
+    birth_year = 2020 - age,
+    age_groups = cut(
+      age,
+      breaks = c(0, 25, 41, 57, 76, 120),
+      labels = c(
+        "Gen Z (18-24)", "Milennial (25-40)",
+        "Gen X (41-56)", "Boomer (57-75)", "Silent (75+)"
+      )
+    ),
     race = factor(
       race,
       levels = seq(8),
@@ -62,7 +72,7 @@ cal_survey <- cal_survey %>%
       levels = seq(5),
       labels = c("Dem", "Rep", "Independent", "Other", "Not sure")
     ),
-    ## Collapsing Party ID into Dem, Rep, or Other variable 
+    ## Collapsing Party ID into Dem, Rep, or Other variable
     party = ifelse(
       pid3 != "Dem" & pid3 != "Rep", "Other", pid3
     ),
