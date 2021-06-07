@@ -28,6 +28,10 @@ pretty_condprob(cal_survey, "prop_15", "Yes", "race5", "White")
 pretty_condprob(cal_survey, "prop_16", "Yes", "race5", "Hispanic")
 pretty_condprob(cal_survey, "prop_16", "Yes", "race5", "White")
 
+pretty_condprob(cal_survey, "prop_16", "Yes", "race5", "Hispanic")
+pretty_condprob(cal_survey, "prop_16", "Yes", "race5", "White")
+
+
 ## Partisan distribution
 prop(cal_survey, "race5")
 pretty_condprob(cal_survey, "pid3", "Dem", "race5", "Hispanic")

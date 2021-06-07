@@ -94,12 +94,11 @@ cal_survey <- cal_survey %>%
       levels = c(1, 2),
       labels = c("Yes", "No")
     ),
+    income3 = ifelse(is.na(income3), 4, income3),
     income3 = factor(
       income3,
-      levels = c(-1, 1, 2, 3, 4),
-      labels = c(
-        "No data", "Under 50k", "50-100k", "100k+", "Prefer not to say"
-      )
+      levels = c(1, 2, 3, 4),
+      labels = c("Under 50k", "50-100k", "100k+", "Prefer not to say")
     ),
     elec_int_state = factor(
       elec_int_state,
