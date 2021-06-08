@@ -6,14 +6,12 @@ library(janitor)
 library(assertthat)
 library(here)
 library(styler)
-library(Kmisc)
+# library(Kmisc)
 
 library(margins)
 library(stargazer)
 library(xtable)
 library(survey)
-library(knitr)
-library(kableExtra)
 library(tableone)
 library(GGally)
 library(jtools)
@@ -131,6 +129,9 @@ stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
       "Support Proposition 16"
     ),
     apply.coef = exp,
+    t.auto = F, 
+    p.auto = F,
+    report = "vct*",
     # dep.var.labels.include = FALSE,
     model.numbers = TRUE,
     star.char = c("*", "**", "***"),
@@ -230,6 +231,9 @@ stargazer_custom_odds <- function(x, type = "text", lab = c(15, 16)) {
       "Support Proposition 16"
     ),
     apply.coef = exp,
+    t.auto = F, 
+    p.auto = F,
+    report = "vct*",
     # dep.var.labels.include = FALSE,
     model.numbers = TRUE,
     star.char = c("*", "**", "***"),
