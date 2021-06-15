@@ -78,7 +78,7 @@ plot_16 <- ggplot(all_16_reg, aes(term, estimate, color = term)) + geom_point() 
 print(plot_16)
 
 
-ggsave("plot16_up.png", plot_16)
-ggsave("plot15_up.png", plot_15)
+ggsave("plot16_up.jpeg", plot_16)
+ggsave("plot15_up.jpeg", plot_15)
 
 
