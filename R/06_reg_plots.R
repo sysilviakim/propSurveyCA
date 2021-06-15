@@ -34,7 +34,15 @@ all_16_reg <- all_16_reg %>% rename("conf.low" = "2.5 %", "conf.high" = "97.5 %"
 all_15_reg$term <- c("Black", "Hispanic", "Asian", "Other")
 all_16_reg$term <- c("Black", "Hispanic", "Asian", "Other")
 
+# working on shortening the code
 
+models<- list(tidy(model_weight$demo_geo$prop_15),
+              tidy(model_weight$demo_geo$prop_16),
+              tidy(model_weight$demo_geo_party$prop_15),
+              tidy(model_weight$demo_geo_party$prop_16),
+              tidy(model_weight$all$prop_15),
+              tidy(model_weight$all$prop_16))
+conf_intervals <- models %>% lapply(function(x) confint(models,level = .95))
 
 
 ### Making the plots  --- ------------------------------------------------------
