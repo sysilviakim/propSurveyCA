@@ -46,7 +46,10 @@ conf_intervals <- models %>% lapply(function(x) confint(models,level = .95))
 
 
 ### Making the plots  --- ------------------------------------------------------
-
+My_Theme = theme(
+  axis.title.x = element_text(size = 14),
+  axis.text.x = element_text(size = 12),
+  axis.title.y = element_text(size = 14))
 plot_15 <- ggplot(all_15_reg, aes(term, estimate, color = term)) + geom_point()+
   geom_pointrange(size = 1.2, aes(ymin = conf.low, ymax= conf.high)) +
   labs(x = "Race", y = "Proposition 15 (95% C.I.)", color = "Race") + 
@@ -62,6 +65,7 @@ plot_15 <- ggplot(all_15_reg, aes(term, estimate, color = term)) + geom_point()+
   annotate("rect", fill = "lightgray", alpha = 0.4) + 
   ggtitle("Model 3, Prop. 15 and Race")
 
+plot_15 <- plot_15 + My_Theme
 print(plot_15)
 
 
@@ -82,11 +86,11 @@ plot_16 <- ggplot(all_16_reg, aes(term, estimate, color = term)) + geom_point() 
   annotate("rect", fill = "lightgray", alpha = 0.4) + 
   ggtitle("Model 3, Prop. 16 and Race")
 
-
+plot_16<- plot_16 + My_Theme
 print(plot_16)
 
 
-ggsave("plot16_up.jpeg", plot_16)
-ggsave("plot15_up.jpeg", plot_15)
+ggsave("plot16_upd.pdf", plot_16)
+ggsave("plot15_upd.pdf", plot_15)
 
 
