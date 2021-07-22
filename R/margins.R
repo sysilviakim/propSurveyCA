@@ -8,6 +8,9 @@ cal_subset$income3 <- droplevels(cal_subset$income3)
 cal_subset$elec_int_state <- droplevels(cal_subset$elec_int_state)
 cal_subset$covid_response <- droplevels(cal_subset$covid_response)
 
+cal_survey$party <- ifelse(
+  cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3)
+
 ## regressions - ols and glm
 ols <- lm(prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party, 
                data = cal_survey, weights = weight_ca)
@@ -21,7 +24,7 @@ glm_16 <- glm(prop_16 ~ gender + age + race5 + educ + income3 + ca_region + part
              elec_int_state + covid_response, 
            data = cal_subset, weight = weight_ca, family = 
              "quasibinomial")
-
+summary(glm)
 ### margins 
 m_glm <- margins(glm)
 
@@ -29,7 +32,11 @@ m_glm_16 <- margins(glm_16)
 
 ## comparing
 
-xtable(export_summs(ols, m_glm, type = "latex"))
 
-xtable(export_summs(ols_16, m_glm_16, type = "latex"))
+stargazer(ols, type = "latex", out = "ols.tex")
+stargazer(ols_16, type = "latex", out = "ols.tex")
+
+xtable(export_summs(m_glm, type = "latex"))
+
+xtable(export_summs(m_glm_16, type = "latex"))
 
