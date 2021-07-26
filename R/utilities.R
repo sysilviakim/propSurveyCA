@@ -94,7 +94,11 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
       ),
       "Models"
     ),
-    out = ifelse(lab == 15, "reg_prop15_mod.tex", "reg_prop16_mod.tex")
+    out = ifelse(
+      lab == 15,
+      here("tab", "reg_prop15_mod.tex"),
+      here("tab", "reg_prop16_mod.tex")
+    )
   )
 }
 
@@ -138,7 +142,11 @@ stargazer_tex_omit  <- function(x, type = "latex", lab = c(15, 16)) {
       ),
       "Models"
     ),
-    out = ifelse(lab == 15, "reg_prop15_modified.tex", "reg_prop16_modified.tex")
+    out = ifelse(
+      lab == 15,
+      here("tab", "reg_prop15_modified.tex"),
+      here("tab", "reg_prop16_modified.tex")
+    )
   )
 }
 
@@ -194,7 +202,9 @@ stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
       "Odd-Ratios per Model"
     ),
     out = ifelse(
-      lab == 15, "prop15_oddratios_mod.tex", "prop16_oddratios_mod.tex"
+      lab == 15,
+      here("tab", "prop15_oddratios_mod.tex"),
+      here("tab", "prop16_oddratios_mod.tex")
     )
   )
 }
