@@ -68,7 +68,7 @@ plot_15 <- ggplot(all_15_reg, aes(term, estimate, color = term)) +
   ) +
   geom_hline(yintercept = 0) +
   scale_y_continuous(
-    limits = c(-1, 1), breaks = seq(1, -1, by = -.25),
+    limits = c(-.75, 1.8), breaks = seq(1.8, -.75, by = -.25),
     labels =
       scales::number_format(accuracy = 0.01), oob = rescale_none
   ) +
