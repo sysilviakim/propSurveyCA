@@ -260,23 +260,23 @@ party_race_prop <- prop.table(party_race_freq, margin = 1)
 
 
 ### GENZ 
-gen_z_freq_yes_p <- age_prop[1]
+gen_z_freq_yes_p <- age_prop[1]*100
 #gen_z_freq_no_p <- age_prop[2]
 
 ## MIL 
-mil_freq_yes_p  <- age_prop[6]
+mil_freq_yes_p  <- age_prop[6]*100
 #mil_freq_no_p  <- age_prop[7]
 
 ## GEN X 
-gen_x_freq_yes_p <- age_prop[11]
+gen_x_freq_yes_p <- age_prop[11]*100
 #gen_x_freq_no_p <- age_prop[12]
 
 # BOOMER 
-boomer_freq_yes_p <-age_prop[16]
+boomer_freq_yes_p <-age_prop[16]*100
 #boomer_freq_no_p <-age_prop[17]
 
 ## SILENT
-silent_freq_yes_p <- age_prop[21]
+silent_freq_yes_p <- age_prop[21]*100
 #silent_freq_no_p <- age_prop[22]
 
 View(age_prop)
@@ -329,23 +329,23 @@ stargazer(silent_freq_yes_p, out = "silent_yes_p.tex")
 ###### Proportion Age ------
 
 ### GENZ 
-gen_z_freq_yes_p16 <- age_p_16[1]
+gen_z_freq_yes_p16 <- age_p_16[1]*100
 #gen_z_freq_no_p16 <- age_p_16[2]
 
 ## MIL 
-mil_freq_yes_p16  <- age_p_16[6]
+mil_freq_yes_p16  <- age_p_16[6]*100
 #mil_freq_no_p16  <- age_p_16[7]
 
 ## GEN X 
-gen_x_freq_yes_p16 <- age_p_16[11]
+gen_x_freq_yes_p16 <- age_p_16[11]*100
 #gen_x_freq_no_p16 <- age_p_16[12]
 
 # BOOMER 
-boomer_freqyes_p16 <-age_p_16[16]
+boomer_freqyes_p16 <-age_p_16[16]*100
 #boomer_freq_no_p16 <-age_p_16[17]
 
 ## SILENT
-silent_freqyes_p16 <- age_p_16[21]
+silent_freqyes_p16 <- age_p_16[21]*100
 #silent_freq_no_p16 <- age_p_16[22]
 
 View(age_prop)
@@ -398,23 +398,23 @@ stargazer(silent_freqyes_p16, out = "silent_yes_p16.tex")
 #### Prop Race ----
 
 ### White
-white_p_yes <- race_prop[1]
+white_p_yes <- race_prop[1]*100
 #white_p_no <- race_prop[2]
 
 ## Black
-black_p_yes  <- race_prop[6]
+black_p_yes  <- race_prop[6]*100
 #black_p_no  <- race_prop[7]
 
 ## Hispanic
-hisp_p_yes <- race_prop[11]
+hisp_p_yes <- race_prop[11]*100
 #hisp_p_no <- race_prop[12]
 
 # Asian 
-asian_p_yes <-race_prop[16]
+asian_p_yes <-race_prop[16]*100
 #asian_p_no <-race_prop[17]
 
 ## Other
-other_p_yes <- race_prop[21]
+other_p_yes <- race_prop[21]*100
 #other_p_no <- race_prop[22]
 
 stargazer(white_p_yes, out = "white_p_yes.tex")
@@ -466,24 +466,24 @@ stargazer(other_p_yes, out = "other_p_yes.tex")
 ##### Race prop 16 ------
 
 ### White
-white_p_yes16 <- race_prop[1]
-#white_p_no16 <- race_prop[2]
+white_p_yes16 <- race_prop_16[1]*100
+#white_p_no16 <- race_prop_16[2]
 
 ## Black
-black_p_yes16  <- race_prop[6]
-#black_p_no16  <- race_prop[7]
+black_p_yes16  <- race_prop_16[6]*100
+#black_p_no16  <- race_prop_16[7]
 
 ## Hispanic
-hisp_p_yes16 <- race_prop[11]
-#hisp_p_no16 <- race_prop[12]
+hisp_p_yes16 <- race_prop_16[11]*100
+#hisp_p_no16 <- race_prop_16[12]
 
 # Asian 
-asian_p_yes16 <-race_prop[16]
-#asian_p_no16 <-race_prop[17]
+asian_p_yes16 <-race_prop_16[16]*100
+#asian_p_no16 <-race_prop_16[17]
 
 ## Other
-other_p_yes16 <- race_prop[21]
-#other_p_no16 <- race_prop[22]
+other_p_yes16 <- race_prop_16[21]*100
+#other_p_no16 <- race_prop_16[22]
 
 stargazer(white_p_yes16, out = "white_p_yes16.tex")
 #stargazer(white_p_no16, out = "white_p_no16.tex")
@@ -510,9 +510,9 @@ stargazer(other_p_yes16, out = "other_p_yes16.tex")
 
 ### Gen Prop ------
 
-female_prop_y <- gen_prop[1]
+female_prop_y <- gen_prop[1]*100
 #female_prop_n <- gen_prop[2]
-male_prop_y <- gen_prop[6]
+male_prop_y <- gen_prop[6]*100
 #male_prop_n <- gen_prop[7]
 
 stargazer(female_prop_y, out = "female_prop_y.tex")
@@ -534,9 +534,9 @@ stargazer(male_prop_y, out = "male_prop_y.tex")
 
 ### Gen Prop 16 -----
 
-female_prop_y16 <- gen_prop16[1]
+female_prop_y16 <- gen_prop16[1]*100
 #female_prop_n16 <- gen_prop16[2]
-male_prop_y16 <- gen_prop16[6]
+male_prop_y16 <- gen_prop16[6]*100
 #male_prop_n16 <- gen_prop16[7]
 
 stargazer(female_prop_y16, out = "female_prop_y16.tex")
@@ -566,13 +566,13 @@ stargazer(male_prop_y16, out = "male_prop_y16.tex")
 
 ## Prop Party -----
 
-dem_y_p <- party_prop[1]
+dem_y_p <- party_prop[1]*100
 #dem_n_p <- party_prop[2]
-rep_y_p <- party_prop[6]
+rep_y_p <- party_prop[6]*100
 #rep_n_p <- party_prop[7]
-p_ind_y_p <- party_prop[11]
-p_other_y_p <- party_prop[16]
-ns_y_p <- party_prop[21]
+p_ind_y_p <- party_prop[11]*100
+p_other_y_p <- party_prop[16]*100
+ns_y_p <- party_prop[21]*100
 stargazer(dem_y_p, out = "dem_y_p.tex")
 #stargazer(dem_n_p, out = "dem_n_p.tex")
 stargazer(rep_y_p, out = "rep_y_p.tex")
@@ -607,13 +607,13 @@ stargazer(ns_y_p, out = "ns_y_p.tex")
 #### Prop 16 Party ------
 
 
-dem_y_p_16 <- party_prop16[1]
+dem_y_p_16 <- party_prop16[1]*100
 #dem_n_p_16 <- party_prop16[2]
-rep_y_p_16 <- party_prop16[6]
+rep_y_p_16 <- party_prop16[6]*100
 #rep_n_p_16 <- party_prop16[7]
-p_ind_y_p_16 <- party_prop16[11]
-p_other_y_p_16 <- party_prop16[16]
-ns_y_16 <- party_prop16[21]
+p_ind_y_p_16 <- party_prop16[11]*100
+p_other_y_p_16 <- party_prop16[16]*100
+ns_y_16 <- party_prop16[21]*100
 stargazer(dem_y_p_16, out = "dem_y_p_16.tex")
 #stargazer(dem_n_p_16, out = "dem_n_p_16.tex")
 stargazer(rep_y_p_16, out = "rep_y_p_16.tex")
@@ -623,23 +623,23 @@ stargazer(p_other_y_p_16, out = "p_other_y_p_16.tex")
 stargazer(ns_y_16, out = "ns_y_16.tex")
 ### Table 2 ---- 
 # prop
-white_dem_p <-party_race_prop[1]
-black_dem_p <-party_race_prop[2]
-hisp_dem_p <- party_race_prop[3]
-asian_dem_p <- party_race_prop[4]
-other_dem_p <- party_race_prop[5]
+white_dem_p <-party_race_prop[1]*100
+black_dem_p <-party_race_prop[2]*100
+hisp_dem_p <- party_race_prop[3]*100
+asian_dem_p <- party_race_prop[4]*100
+other_dem_p <- party_race_prop[5]*100
 
-white_rep_p <-party_race_prop[6]
-black_rep_p<-party_race_prop[7]
-hisp_rep_p<-party_race_prop[8]
-asian_rep_p<-party_race_prop[9]
-other_rep_p<-party_race_prop[10]
+white_rep_p <-party_race_prop[6]*100
+black_rep_p<-party_race_prop[7]*100
+hisp_rep_p<-party_race_prop[8]*100
+asian_rep_p<-party_race_prop[9]*100
+other_rep_p<-party_race_prop[10]*100
 
-white_other_p<-party_race_prop[11]
-black_other_p<-party_race_prop[12]
-hisp_other_p<-party_race_prop[13]
-asian_other_p<-party_race_prop[14]
-other_other_p<- party_race_prop[15]
+white_other_p<-party_race_prop[11]*100
+black_other_p<-party_race_prop[12]*100
+hisp_other_p<-party_race_prop[13]*100
+asian_other_p<-party_race_prop[14]*100
+other_other_p<- party_race_prop[15]*100
 
 
 stargazer(white_dem_p, out = "white_dem_p.tex")
