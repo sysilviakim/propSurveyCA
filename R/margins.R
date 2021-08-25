@@ -33,10 +33,10 @@ m_glm_16 <- margins(glm_16)
 ## comparing
 
 
-stargazer(ols, type = "latex", out = "ols.tex")
-stargazer(ols_16, type = "latex", out = "ols.tex")
+stargazer(ols, type = "text", out = "ols.tex")
+stargazer(ols_16, type = "text", out = "ols.tex")
 
-xtable(export_summs(m_glm, type = "latex"))
+export_summs(m_glm, type = "text")
 
-xtable(export_summs(m_glm_16, type = "latex"))
+export_summs(m_glm_16, type = "text")
 
