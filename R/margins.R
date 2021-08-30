@@ -40,3 +40,10 @@ export_summs(m_glm, type = "text")
 
 export_summs(m_glm_16, type = "text")
 
+### Plots to match the plot from Fisk article 
+
+glm_15_lat <- margins(glm, variables = "race5")
+plot(glm_15_lat)
+
+glm_16_lat <- margins(glm_16, variables = "race5")
+plot(glm_16_lat)
