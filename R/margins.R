@@ -8,6 +8,7 @@ cal_subset$income3 <- droplevels(cal_subset$income3)
 cal_subset$elec_int_state <- droplevels(cal_subset$elec_int_state)
 cal_subset$covid_response <- droplevels(cal_subset$covid_response)
 
+
 cal_survey$party <- ifelse(
   cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3)
 
@@ -43,7 +44,18 @@ export_summs(m_glm_16, type = "text")
 ### Plots to match the plot from Fisk article 
 
 glm_15_lat <- margins(glm, variables = "race5")
-plot(glm_15_lat)
+
+
+pdf(file = "prop_15_ame.pdf")
+plot(glm_15_lat, xaxt = "none", xlab = "Race")
+axis(1, at = seq(1, 4, 1),  labels = c("Black", "Hispanic", "Asian", "Other"))
+dev.off()
+
 
 glm_16_lat <- margins(glm_16, variables = "race5")
-plot(glm_16_lat)
+
+
+pdf(file="prop_16_ame.pdf")
+plot(glm_16_lat, xaxt = "none", xlab = "Race")
+axis(1, at = seq(1, 4, 1),  labels = c("Black", "Hispanic", "Asian", "Other"))
+dev.off()
