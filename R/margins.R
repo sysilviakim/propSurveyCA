@@ -1,6 +1,6 @@
 
-install.packages("huxtable")
-library(huxtable)
+# install.packages("huxtable")
+# library(huxtable)
 
 
 ### dropping unused levels so margins works
@@ -47,7 +47,7 @@ glm_15_lat <- margins(glm, variables = "race5")
 
 
 pdf(file = "prop_15_ame.pdf")
-plot(glm_15_lat, xaxt = "none", xlab = "Race")
+plot(glm_15_lat, xaxt = "n")
 axis(1, at = seq(1, 4, 1),  labels = c("Black", "Hispanic", "Asian", "Other"))
 dev.off()
 
@@ -56,6 +56,6 @@ glm_16_lat <- margins(glm_16, variables = "race5")
 
 
 pdf(file="prop_16_ame.pdf")
-plot(glm_16_lat, xaxt = "none", xlab = "Race")
+plot(glm_16_lat, xaxt = "none")
 axis(1, at = seq(1, 4, 1),  labels = c("Black", "Hispanic", "Asian", "Other"))
 dev.off()
