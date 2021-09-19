@@ -1,7 +1,11 @@
-
+### packages
 # install.packages("huxtable")
 # library(huxtable)
 
+### data
+### data 
+load(here("data", "tidy", "cal_survey_subset.Rda"))
+load(here("data", "tidy", "cal_survey_raw.Rda"))
 
 ### dropping unused levels so margins works
 cal_subset$income3 <- droplevels(cal_subset$income3)

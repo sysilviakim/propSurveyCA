@@ -1,3 +1,4 @@
+### packages 
 # install.packages("DescTools")
 
 library(stats)
@@ -6,6 +7,11 @@ library(prediction)
 library(margins)
 library(gmodels)
 library(MASS)
+
+### data 
+load(here("data", "tidy", "cal_survey_subset.Rda"))
+load(here("data", "tidy", "cal_survey_raw.Rda"))
+###
 glm <- glm(prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
              elec_int_state + covid_response, 
            data = cal_subset, weight = weight_ca, family = 
