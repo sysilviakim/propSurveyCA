@@ -1,14 +1,4 @@
-### packages 
-# install.packages("DescTools")
-
-library(stats)
-library(DescTools)
-library(prediction)
-library(margins)
-library(gmodels)
-library(MASS)
-
-### data 
+source(here::here("R", "utilities.R"))
 load(here("data", "tidy", "cal_survey_subset.Rda"))
 load(here("data", "tidy", "cal_survey_raw.Rda"))
 ###

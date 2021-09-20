@@ -1,9 +1,4 @@
-### packages
-# install.packages("huxtable")
-# library(huxtable)
-
-### data
-### data 
+source(here::here("R", "utilities.R"))
 load(here("data", "tidy", "cal_survey_subset.Rda"))
 load(here("data", "tidy", "cal_survey_raw.Rda"))
 
