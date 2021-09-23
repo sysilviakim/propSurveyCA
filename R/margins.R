@@ -1,6 +1,4 @@
-source(here::here("R", "utilities.R"))
-load(here("data", "tidy", "cal_survey_subset.Rda"))
-load(here("data", "tidy", "cal_survey_raw.Rda"))
+source(here::here("R", "05_reg_prelim.R"))
 
 ### dropping unused levels so margins works
 cal_subset$income3 <- droplevels(cal_subset$income3)

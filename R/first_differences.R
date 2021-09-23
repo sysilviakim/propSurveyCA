@@ -1,7 +1,5 @@
-source(here::here("R", "utilities.R"))
 source(here::here("R", "05_reg_prelim.R"))
-load(here("data", "tidy", "cal_survey_subset.Rda"))
-load(here("data", "tidy", "cal_survey_raw.Rda"))
+
 
 ########  Trying using the nested model --------
 beta <- model_weight$all$prop_15$coefficients

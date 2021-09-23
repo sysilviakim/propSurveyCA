@@ -2,25 +2,14 @@ source(here::here("R", "05_reg_prelim.R"))
 
 #### Breaking down model list into separate ones by proposition
 
-demo_geo_15 <- tidy(model_weight$demo_geo$prop_15)
-demo_geo_16 <- tidy(model_weight$demo_geo$prop_16)
-dm_g_p_15 <- tidy(model_weight$demo_geo_party$prop_15)
-dm_g_p_16 <- tidy(model_weight$demo_geo_party$prop_16)
 all_15 <- tidy(model_weight$all$prop_15)
 all_16 <- tidy(model_weight$all$prop_16)
 
-demo_geo_15_con <- confint(model_weight$demo_geo$prop_15, level = .95) %>%
-  as.data.frame()
-demo_geo_16_con <- confint(model_weight$demo_geo$prop_16, level = .95) %>%
-  as.data.frame()
-dm_g_p_15_con <- confint(model_weight$demo_geo_party$prop_15, level = .95) %>%
-  as.data.frame()
-dm_g_p_16_con <- confint(model_weight$demo_geo_party$prop_16, level = .95) %>%
-  as.data.frame()
 all_15_con <- confint(model_weight$all$prop_15, level = .95) %>%
   as.data.frame()
 all_16_con <- confint(model_weight$all$prop_16, level = .95) %>%
   as.data.frame()
+
 # Getting rid of other variables -- specifying in the ggplot args doesn't work
 all_15_total <- cbind(all_15, all_15_con)
 all_16_total <- cbind(all_16, all_16_con)
@@ -37,16 +26,6 @@ all_16_reg <- all_16_reg %>%
 all_15_reg$term <- c("Black", "Hispanic", "Asian", "Other")
 all_16_reg$term <- c("Black", "Hispanic", "Asian", "Other")
 
-# working on shortening the code
-
-models <- list(
-  tidy(model_weight$demo_geo$prop_15),
-  tidy(model_weight$demo_geo$prop_16),
-  tidy(model_weight$demo_geo_party$prop_15),
-  tidy(model_weight$demo_geo_party$prop_16),
-  tidy(model_weight$all$prop_15),
-  tidy(model_weight$all$prop_16)
-)
 
 ### Making the plots  --- ------------------------------------------------------
 My_Theme <- theme(
