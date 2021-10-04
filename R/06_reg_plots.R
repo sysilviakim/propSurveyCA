@@ -5,10 +5,13 @@ source(here::here("R", "05_reg_prelim.R"))
 all_15 <- tidy(model_weight$all$prop_15)
 all_16 <- tidy(model_weight$all$prop_16)
 
+# tidy_props <- map(model_weight$all, tidy)
+
 all_15_con <- confint(model_weight$all$prop_15, level = .95) %>%
   as.data.frame()
 all_16_con <- confint(model_weight$all$prop_16, level = .95) %>%
   as.data.frame()
+
 
 # Getting rid of other variables -- specifying in the ggplot args doesn't work
 all_15_total <- cbind(all_15, all_15_con)
