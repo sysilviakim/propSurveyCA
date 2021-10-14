@@ -53,8 +53,9 @@ reg_form <- function(x, vars, survey = FALSE) {
     )
   }
 }
-### to make the latex tables - regressions
-### functions have been modified for specific layout
+
+## to make the latex tables - regressions
+## functions have been modified for specific layout
 
 stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
   stargazer(
@@ -100,27 +101,36 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
       ),
       "Models"
     ),
-    out = ifelse(lab == 15, "reg_prop15_mod.tex", "reg_prop16_mod.tex")
+    out = ifelse(
+      lab == 15, 
+      here("tab", "reg_prop15_mod.tex"), 
+      here("tab", "reg_prop16_mod.tex")
+    )
   )
 }
 
-# short version 
-stargazer_tex_omit  <- function(x, type = "latex", lab = c(15, 16)) {
+## short version
+stargazer_tex_omit <- function(x, type = "latex", lab = c(15, 16)) {
   stargazer(
     x,
-    omit = c("Constant","gender", "age", "educ",
-             "income3", "ca_region"),
+    omit = c(
+      "Constant", "gender", "age", "educ",
+      "income3", "ca_region"
+    ),
     omit.yes.no = c("Yes", "No"),
-    omit.labels = c("Constant","Gender", "Age", "Education",
-                    "Income", "CA Region"),
-    covariate.labels = c("Race: Black", "Race: Hispanic",
-                         "Race: Asian", "Race: Other","Party: Other", "Party: Rep",
-                         "Election Integrity: Somewhat confident",
-                         "Election Integrity: Not too confident",
-                         "Electoral Integrity: Not at all confident",
-                         "Electoral Integrity: Don't know",
-                         "COVID Response: Less effective than others",
-                         "COVID Response: About as effective"
+    omit.labels = c(
+      "Constant", "Gender", "Age", "Education",
+      "Income", "CA Region"
+    ),
+    covariate.labels = c(
+      "Race: Black", "Race: Hispanic",
+      "Race: Asian", "Race: Other", "Party: Other", "Party: Rep",
+      "Election Integrity: Somewhat confident",
+      "Election Integrity: Not too confident",
+      "Electoral Integrity: Not at all confident",
+      "Electoral Integrity: Don't know",
+      "COVID Response: Less effective than others",
+      "COVID Response: About as effective"
     ),
     dep.var.labels = ifelse(
       lab == 15,
@@ -144,13 +154,15 @@ stargazer_tex_omit  <- function(x, type = "latex", lab = c(15, 16)) {
       ),
       "Models"
     ),
-    out = ifelse(lab == 15, "reg_prop15_modified.tex", "reg_prop16_modified.tex")
+    out = ifelse(
+      lab == 15,
+      here("tab", "reg_prop15_modified.tex"),
+      here("tab", "reg_prop16_modified.tex")
+    )
   )
 }
 
-
-#### function to create odd-ratio latex tables
-
+## function to create odd-ratio latex tables
 stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
   stargazer(
     x,
@@ -179,7 +191,7 @@ stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
       "Support Proposition 16"
     ),
     apply.coef = exp,
-    t.auto = F, 
+    t.auto = F,
     p.auto = F,
     # report = "vct*",
     # dep.var.labels.include = FALSE,
@@ -200,35 +212,38 @@ stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
       "Odd-Ratios per Model"
     ),
     out = ifelse(
-      lab == 15, "prop15_oddratios_mod.tex", "prop16_oddratios_mod.tex"
+      lab == 15,
+      here("tab", "prop15_oddratios_mod.tex"),
+      here("tab", "prop16_oddratios_mod.tex")
     )
   )
 }
 
-# to view the tables
-
-
 stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
   stargazer(
     x,
-    omit = c("Constant","Gender: Male", "Age", "Race: Black", "Race: Hispanic",
-             "Race: Asian", "Race: Other", "Education: HS",
-             "Education: Some College", "Education: 2-yr",
-             "Education: 4-yr", "Education: Post-grad",
-             "Income: 50-100k", "Income: 100k+",
-             "Income: Prefer not to say",
-             "CA Region: Central Valley/Inland", "CA Region: Coastal",
-             "CA Region: LA",
-             "CA Region: Southern California (non-LA)"),
-    # omit.labels = c("Constant","Gender: Male", "Age", "Race: Black", "Race: Hispanic",
-    #                 "Race: Asian", "Race: Other", "Education: HS",
-    #                 "Education: Some College", "Education: 2-yr",
-    #                 "Education: 4-yr", "Education: Post-grad",
-    #                 "Income: 50-100k", "Income: 100k+",
-    #                 "Income: Prefer not to say",
-    #                 "CA Region: Central Valley/Inland", "CA Region: Coastal",
-    #                 "CA Region: LA",
-    #                 "CA Region: Southern California (non-LA)"),
+    omit = c(
+      "Constant", "Gender: Male", "Age", "Race: Black", "Race: Hispanic",
+      "Race: Asian", "Race: Other", "Education: HS",
+      "Education: Some College", "Education: 2-yr",
+      "Education: 4-yr", "Education: Post-grad",
+      "Income: 50-100k", "Income: 100k+",
+      "Income: Prefer not to say",
+      "CA Region: Central Valley/Inland", "CA Region: Coastal",
+      "CA Region: LA",
+      "CA Region: Southern California (non-LA)"
+    ),
+    # omit.labels = c(
+    #   "Constant","Gender: Male", "Age", "Race: Black", "Race: Hispanic",
+    #   "Race: Asian", "Race: Other", "Education: HS",
+    #   "Education: Some College", "Education: 2-yr",
+    #   "Education: 4-yr", "Education: Post-grad",
+    #   "Income: 50-100k", "Income: 100k+",
+    #   "Income: Prefer not to say",
+    #   "CA Region: Central Valley/Inland", "CA Region: Coastal",
+    #   "CA Region: LA",
+    #   "CA Region: Southern California (non-LA)"
+    # ),
     covariate.labels = c(
       "Gender: Male", "Age", "Race: Black", "Race: Hispanic",
       "Race: Asian", "Race: Other", "Education: HS",
@@ -273,33 +288,37 @@ stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
 stargazer_custom_omit <- function(x, type = "text", lab = c(15, 16)) {
   stargazer(
     x,
-    omit = c("Constant","genderM", "age", "educHS",
-             "educSome college", "educ2-yr",
-             "educ4-yr", "educPost-grad",
-             "income350-100k", "income3100k+",
-             "income3Prefer not to say", "ca_region"),
+    omit = c(
+      "Constant", "genderM", "age", "educHS",
+      "educSome college", "educ2-yr",
+      "educ4-yr", "educPost-grad",
+      "income350-100k", "income3100k+",
+      "income3Prefer not to say", "ca_region"
+    ),
     omit.yes.no = c("Yes", "No"),
-    omit.labels = c("Constant","Gender: Male", "Age", "Education: HS",
-                    "Education: Some College", "Education: 2-yr",
-                    "Education: 4-yr", "Education: Post-grad",
-                    "Income: 50-100k", "Income: 100k+",
-                    "Income: Prefer not to say",
-                    "CA Region"),
-    covariate.labels = c("Race: Black", "Race: Hispanic",
-                         "Race: Asian", "Race: Other","Party: Other", "Party: Rep",
-                         "Election Integrity: Somewhat confident",
-                         "Election Integrity: Not too confident",
-                         "Electoral Integrity: Not at all confident",
-                         "Electoral Integrity: Don't know",
-                         "COVID Response: Less effective than others",
-                         "COVID Response: About as effective"
+    omit.labels = c(
+      "Constant", "Gender: Male", "Age", "Education: HS",
+      "Education: Some College", "Education: 2-yr",
+      "Education: 4-yr", "Education: Post-grad",
+      "Income: 50-100k", "Income: 100k+",
+      "Income: Prefer not to say",
+      "CA Region"
+    ),
+    covariate.labels = c(
+      "Race: Black", "Race: Hispanic",
+      "Race: Asian", "Race: Other", "Party: Other", "Party: Rep",
+      "Election Integrity: Somewhat confident",
+      "Election Integrity: Not too confident",
+      "Electoral Integrity: Not at all confident",
+      "Electoral Integrity: Don't know",
+      "COVID Response: Less effective than others",
+      "COVID Response: About as effective"
     ),
     dep.var.labels =
       ifelse(
         lab == 15,
-        "Support Proposition 15", ifelse(lab == 16,
-                                         "Support Proposition 16", 0
-        )
+        "Support Proposition 15",
+        ifelse(lab == 16, "Support Proposition 16", 0)
       ),
     # dep.var.labels.include = TRUE,
     model.numbers = TRUE,
@@ -309,9 +328,10 @@ stargazer_custom_omit <- function(x, type = "text", lab = c(15, 16)) {
     header = FALSE,
     type = type,
     title = paste(
-      ifelse(lab == 15, "Proposition 15", ifelse(lab == 16,
-                                                 "Proposition 16", 0
-      )),
+      ifelse(
+        lab == 15, "Proposition 15",
+        ifelse(lab == 16, "Proposition 16", 0)
+      ),
       "Models"
     )
   )
@@ -345,7 +365,7 @@ stargazer_custom_odds <- function(x, type = "text", lab = c(15, 16)) {
       "Support Proposition 16"
     ),
     apply.coef = exp,
-    t.auto = F, 
+    t.auto = F,
     p.auto = F,
     # report = "vct*",
     # dep.var.labels.include = FALSE,

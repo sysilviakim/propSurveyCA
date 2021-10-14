@@ -23,7 +23,6 @@ model_nested <- c("demo", "geo", "party", "poli_all")
 sv_design <- svydesign(id = ~1, weights = ~weight_ca, data = cal_subset)
 
 # Models with no weights (education is categorical) ============================
-
 model_no_wgt <- list(
   ## Benchmark test: no covariates
   null = y %>% map(~ reg_form(.x, "null")),
@@ -44,17 +43,15 @@ model_weight <- list(
   all = y %>% map(~ reg_form(.x, model_nested, survey = TRUE))
 )
 
-
-## to see the table from paper 
+## to see the table from paper
 stargazer_custom_omit(model_weight %>% map("prop_15"), lab = 15)
 stargazer_custom_omit(model_weight %>% map("prop_16"), lab = 16)
 
-## to see full table 
+## to see full table
 stargazer_custom(model_weight %>% map("prop_15"), lab = 15)
 stargazer_custom(model_weight %>% map("prop_16"), lab = 16)
 
-## to see odds ratios 
-
+## to see odds ratios
 stargazer_custom_odds(model_weight %>% map("prop_15"), lab = 15)
 stargazer_custom_odds(model_weight %>% map("prop_16"), lab = 16)
 
@@ -62,12 +59,10 @@ stargazer_custom_odds(model_weight %>% map("prop_16"), lab = 16)
 prop15_table <- stargazer_custom_tex(model_weight %>% map("prop_15"), lab = 15)
 prop16_table <- stargazer_custom_tex(model_weight %>% map("prop_16"), lab = 16)
 
-
 prop_15_short <- stargazer_tex_omit(model_weight %>% map("prop_15"), lab = 15)
 prop_16_short <- stargazer_tex_omit(model_weight %>% map("prop_16"), lab = 16)
 
-
-# to produce the tables with odd-ratios 
+# to produce the tables with odd-ratios
 prop15_odds <- stargazer_odds_tex(model_weight %>% map("prop_15"), lab = 15)
 prop16_odds <- stargazer_odds_tex(model_weight %>% map("prop_16"), lab = 16)
 
