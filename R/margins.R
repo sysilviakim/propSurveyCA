@@ -1,10 +1,9 @@
 source(here::here("R", "05_reg_prelim.R"))
 
-### dropping unused levels so margins works
-cal_subset$income3 <- droplevels(cal_subset$income3)
-cal_subset$elec_int_state <- droplevels(cal_subset$elec_int_state)
-cal_subset$covid_response <- droplevels(cal_subset$covid_response)
-
+# Clean data ===================================================================
+## dropping unused levels so margins works
+cal_subset <- cal_subset %>%
+  droplevels()
 
 cal_survey$party <- ifelse(
   cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3)
