@@ -23,8 +23,7 @@ all_15_reg <- all_15_reg %>%
 all_16_reg <- all_16_reg %>%
   rename("conf.low" = "2.5 %", "conf.high" = "97.5 %")
 
-all_15_reg$term <- c("Black", "Hispanic", "Asian", "Other")
-all_16_reg$term <- c("Black", "Hispanic", "Asian", "Other")
+all_15_reg$term <- all_16_reg$term <- c("Black", "Hispanic", "Asian", "Other")
 
 # Creating plots ===============================================================
 My_Theme <- theme(

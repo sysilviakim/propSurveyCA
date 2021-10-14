@@ -102,8 +102,8 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
       "Models"
     ),
     out = ifelse(
-      lab == 15, 
-      here("tab", "reg_prop15_mod.tex"), 
+      lab == 15,
+      here("tab", "reg_prop15_mod.tex"),
       here("tab", "reg_prop16_mod.tex")
     )
   )
@@ -265,9 +265,8 @@ stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
     dep.var.labels =
       ifelse(
         lab == 15,
-        "Support Proposition 15", ifelse(lab == 16,
-          "Support Proposition 16", 0
-        )
+        "Support Proposition 15",
+        ifelse(lab == 16, "Support Proposition 16", 0)
       ),
     # dep.var.labels.include = TRUE,
     model.numbers = TRUE,
@@ -277,9 +276,10 @@ stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
     header = FALSE,
     type = type,
     title = paste(
-      ifelse(lab == 15, "Proposition 15", ifelse(lab == 16,
-        "Proposition 16", 0
-      )),
+      ifelse(
+        lab == 15, "Proposition 15", 
+        ifelse(lab == 16, "Proposition 16", 0)
+      ),
       "Models"
     )
   )
