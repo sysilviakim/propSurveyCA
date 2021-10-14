@@ -23,6 +23,7 @@ library(stats)
 library(DescTools)
 library(prediction)
 library(gmodels)
+library(huxtable) ## export_summs in jtools need this
 library(flextable)
 
 # Subdirectories ===============================================================
