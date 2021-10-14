@@ -45,12 +45,11 @@ model_weight <- list(
 )
 
 
-# to see the table from paper 
-
+## to see the table from paper 
 stargazer_custom_omit(model_weight %>% map("prop_15"), lab = 15)
 stargazer_custom_omit(model_weight %>% map("prop_16"), lab = 16)
 
-# to see full table 
+## to see full table 
 stargazer_custom(model_weight %>% map("prop_15"), lab = 15)
 stargazer_custom(model_weight %>% map("prop_16"), lab = 16)
 
@@ -59,9 +58,8 @@ stargazer_custom(model_weight %>% map("prop_16"), lab = 16)
 stargazer_custom_odds(model_weight %>% map("prop_15"), lab = 15)
 stargazer_custom_odds(model_weight %>% map("prop_16"), lab = 16)
 
-# to make the latex tables with log odds
+## to make the latex tables with log odds
 prop15_table <- stargazer_custom_tex(model_weight %>% map("prop_15"), lab = 15)
-
 prop16_table <- stargazer_custom_tex(model_weight %>% map("prop_16"), lab = 16)
 
 
@@ -70,11 +68,9 @@ prop_16_short <- stargazer_tex_omit(model_weight %>% map("prop_16"), lab = 16)
 
 
 # to produce the tables with odd-ratios 
-
 prop15_odds <- stargazer_odds_tex(model_weight %>% map("prop_15"), lab = 15)
-
-
 prop16_odds <- stargazer_odds_tex(model_weight %>% map("prop_16"), lab = 16)
+
 # Model with no weights (education is continuous) ==============================
 model_no_wgt_contedu <- list(
   null = y %>% map(~ reg_form(.x, "null")),
