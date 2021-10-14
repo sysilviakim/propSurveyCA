@@ -1,6 +1,6 @@
 source(here::here("R", "utilities.R"))
 load(here("data", "tidy", "cal_survey_wrangled.Rda"))
-library(flextable)
+
 # Reused setups ================================================================
 prop_labels <- c(prop_15 = 15, prop_16 = 16)
 col_labels <- prop_labels %>%
