@@ -1,4 +1,5 @@
 # Packages =====================================================================
+library(MASS)
 library(plyr)
 library(tidyverse)
 library(lubridate)
@@ -6,7 +7,7 @@ library(janitor)
 library(assertthat)
 library(here)
 library(styler)
-# library(Kmisc)
+library(Kmisc)
 library(margins)
 library(stargazer)
 library(xtable)
@@ -22,8 +23,7 @@ library(stats)
 library(DescTools)
 library(prediction)
 library(gmodels)
-library(MASS)
-# library(huxtable)
+library(flextable)
 
 # Subdirectories ===============================================================
 if (!dir.exists(here("R", "eda"))) {
