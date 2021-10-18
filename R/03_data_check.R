@@ -14,6 +14,27 @@ col_labels <- prop_labels %>%
       # paste0("Prop. ", .x, ": NA")
     )
   )
+### function to produce tables 
+desc_table <- function(x, y, variable){
+  prop_labels %>%
+    map_dfr(
+      ~ {
+        tabyl(
+          dat = x,
+          !!as.name(paste0("prop_", .x)),
+          .y,
+          type = "f"
+        ) %>%
+          mutate(across(where(is.factor), as.character)) %>%
+          adorn_percentages("col") %>%
+          adorn_pct_formatting(digits = 2) %>%
+          unite("front") 
+        # %>% 
+        #   filter(grepl("Yes$|No$", !!as.name(paste0("prop_",.x)))) %>%
+        #   rename(Vote = !!as.name(paste0("prop_", .x)))
+      }
+    ) 
+}
 # Checking for NA values =======================================================
 
 ## Dependent variables
