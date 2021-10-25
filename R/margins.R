@@ -1,6 +1,6 @@
 source(here::here("R", "05_reg_prelim.R"))
 
-
+### margins -- use purrr map and margins_summary instead -----------
 # Clean data ===================================================================
 ## dropping unused levels so margins works
 cal_subset <- cal_subset %>%
