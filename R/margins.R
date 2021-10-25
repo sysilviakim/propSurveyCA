@@ -1,6 +1,6 @@
 source(here::here("R", "05_reg_prelim.R"))
 
-<<<<<<< HEAD
+
 # Clean data ===================================================================
 ## dropping unused levels so margins works
 cal_subset <- cal_subset %>%
@@ -31,7 +31,7 @@ glm_16 <- glm(
   data = cal_subset, weight = weight_ca, family = "quasibinomial"
 )
 summary(glm)
-=======
+
 ### dropping unused levels so margins works
 cal_survey$income3 <- droplevels(cal_survey$income3)
 cal_subset$elec_int_state <- droplevels(cal_subset$elec_int_state)
@@ -76,19 +76,18 @@ summary(glm)
 summary(ols)
 ### margins 
 m_glm <- margins(glm)
->>>>>>> e5e8c28... working on function to create tables, trouble-shooting margins and the 0 nobs in the margins table
 
 # Margins calculations =========================================================
 m_glm <- margins(glm)
 m_glm_16 <- margins(glm_16)
 
-<<<<<<< HEAD
+
 # Compare and export ===========================================================
 stargazer(ols, type = "text", out = here("tab", "ols.tex"))
 stargazer(ols_16, type = "text", out = here("tab", "ols.tex"))
 
 export_summs(m_glm, type = "text")
-=======
+
 ## comparing
 
 
@@ -99,19 +98,16 @@ stargazer(ols_16, type = "text", out = "ols.tex")
 
 export_summs(ols, model_weight$all$prop_15, type = "text")
 
->>>>>>> e5e8c28... working on function to create tables, trouble-shooting margins and the 0 nobs in the margins table
 export_summs(m_glm_16, type = "text")
 
 ## Plots to match the plot from Fisk article
 glm_15_lat <- margins(glm, variables = "race5")
 
-<<<<<<< HEAD
 pdf(file = here("fig", "prop_15_ame.pdf"))
-=======
+
 glm$coefficients
 
 pdf(file = "prop_15_ame.pdf")
->>>>>>> e5e8c28... working on function to create tables, trouble-shooting margins and the 0 nobs in the margins table
 plot(glm_15_lat, xaxt = "n")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Hispanic", "Asian", "Other"))
 dev.off()
