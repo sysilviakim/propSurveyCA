@@ -62,7 +62,7 @@ rownames(first.differences) <- c("Prop. 15: Non-Latino", "Prop. 15: Latino",
                                  "Prop. 15 Difference", "Prop. 16: Non-Latino",
                                  "Prop. 16: Latino", "Prop. 16 Difference",
                                  "Difference: Prop. 15 and Prop. 16")
-print(round(first.differences, digits=3))
+xtable(round(first.differences, digits=3), file = "first_differences.tex")
 ###### Using lists
 
 prop_coefs <- list(
