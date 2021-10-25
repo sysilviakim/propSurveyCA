@@ -23,14 +23,11 @@ library(stats)
 library(DescTools)
 library(prediction)
 library(gmodels)
-<<<<<<< HEAD
 library(huxtable) ## export_summs in jtools need this
 library(flextable)
-=======
 library(MASS)
 library(flextable)
 # library(huxtable)
->>>>>>> e5e8c28... working on function to create tables, trouble-shooting margins and the 0 nobs in the margins table
 
 # Subdirectories ===============================================================
 if (!dir.exists(here("R", "eda"))) {
