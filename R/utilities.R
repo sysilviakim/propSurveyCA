@@ -80,7 +80,8 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
       "Electoral Integrity: Not at all confident",
       "Electoral Integrity: Don't know",
       "COVID Response: Less effective than others",
-      "COVID Response: About as effective"
+      "COVID Response: About as effective",
+      "Constant"
     ),
     dep.var.labels = ifelse(
       lab == 15,

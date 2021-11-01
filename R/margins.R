@@ -1,6 +1,14 @@
 source(here::here("R", "05_reg_prelim.R"))
 
 ### margins -- use purrr map and margins_summary instead -----------
+margins_summary(model_weight$all$prop_16, data = cal_subset, design = sv_design)
+model_weight$all %>% 
+  map(~ margins_summary(.x, data = cal_subset, design = sv_design))
+
+## doesn't recognize survey.design object
+mapply(margins_summary, model = model_weight$all, data = cal_subset,
+       design = sv_design)
+
 # Clean data ===================================================================
 ## dropping unused levels so margins works
 cal_subset <- cal_subset %>%
@@ -11,26 +19,24 @@ cal_survey$party <- ifelse(
 )
 
 # Regressions: ols and glm =====================================================
-ols <- lm(
-  prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party,
-  data = cal_survey, weights = weight_ca
-)
+ols <-lm(as.numeric(prop_15) ~ gender + age + race5 + educ + income3 + ca_region + 
+           party + elec_int_state + covid_response,
+         data = cal_subset, weight = weight_ca)
 glm <- glm(
   prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
   data = cal_subset, weight = weight_ca,
   family = "quasibinomial"
 )
-ols_16 <- lm(
-  prop_16 ~ gender + age + race5 + educ + income3 + ca_region + party,
-  data = cal_survey, weights = weight_ca
-)
+ols_16 <- lm(as.numeric(prop_16) ~ gender + age + race5 + educ + income3 + ca_region + 
+                  party + elec_int_state + covid_response,
+                data = cal_subset, weight = weight_ca)
 glm_16 <- glm(
   prop_16 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
   data = cal_subset, weight = weight_ca, family = "quasibinomial"
 )
-summary(glm)
+summary(ols)
 
 ### dropping unused levels so margins works
 cal_survey$income3 <- droplevels(cal_survey$income3)
@@ -41,20 +47,7 @@ cal_subset$covid_response <- droplevels(cal_subset$covid_response)
 cal_survey$party <- ifelse(
   cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3)
 
-## vars 
-list_vars <- list(cal_survey$gender, cal_survey$age,cal_survey$race5, 
-                  cal_survey$educ, cal_survey$income3, cal_survey$ca_region, 
-                  cal_survey$party)
-lapply(list_vars, as.numeric)
-reg <- function(x, vars) {
- lm(as.formula(
-        paste0(x, " ~ ", paste(list_vars_num[vars] %>% unlist(),
-        collapse = " + "))
-      ),
-      design = sv_design,
-      data = cal_survey,
-    )
-  }
+
 
 
 ## regressions - ols and glm
@@ -78,16 +71,59 @@ summary(ols)
 m_glm <- margins(glm)
 
 # Margins calculations =========================================================
-m_glm <- margins(glm)
-m_glm_16 <- margins(glm_16)
+m_glm_15 <- m_glm %>% summary() %>% as.data.frame()
+m_glm_16 <- margins(glm_16) %>% summary() %>% as.data.frame()
 
+margins(glm)
 
 # Compare and export ===========================================================
-stargazer(ols, type = "text", out = here("tab", "ols.tex"))
-stargazer(ols_16, type = "text", out = here("tab", "ols.tex"))
+stargazer(ols, type = "latex", covariate.labels = c(
+  "Gender: Male", "Age", "Race: Black", "Race: Hispanic",
+  "Race: Asian", "Race: Other", "Education: HS",
+  "Education: Some College", "Education: 2-yr",
+  "Education: 4-yr", "Education: Post-grad",
+  "Income: 50-100k", "Income: 100k+",
+  "Income: Prefer not to say",
+  "CA Region: Central Valley/Inland", "CA Region: Coastal",
+  "CA Region: LA",
+  "CA Region: Southern California (non-LA)",
+  "Party: Rep", "Party: Other",
+  "Election Integrity: Somewhat confident",
+  "Election Integrity: Not too confident",
+  "Electoral Integrity: Not at all confident",
+  "Electoral Integrity: Don't know",
+  "COVID Response: Less effective than others",
+  "COVID Response: About as effective",
+  "Constant"
+), dep.var.labels = "Proposition 15", 
+          out = "ols.tex")
 
-export_summs(m_glm, type = "text")
+stargazer(ols_16, type = "latex", covariate.labels = c("Gender: Male", "Age", 
+                                                "Race: Black", "Race: Hispanic",
+  "Race: Asian", "Race: Other", "Education: HS",
+  "Education: Some College", "Education: 2-yr",
+  "Education: 4-yr", "Education: Post-grad",
+  "Income: 50-100k", "Income: 100k+",
+  "Income: Prefer not to say",
+  "CA Region: Central Valley/Inland", "CA Region: Coastal",
+  "CA Region: LA",
+  "CA Region: Southern California (non-LA)",
+  "Party: Rep", "Party: Other",
+  "Election Integrity: Somewhat confident",
+  "Election Integrity: Not too confident",
+  "Electoral Integrity: Not at all confident",
+  "Electoral Integrity: Don't know",
+  "COVID Response: Less effective than others",
+  "COVID Response: About as effective",
+  "Constant"), dep.var.labels = "Proposition 16", 
+          out = "ols_16.tex")
 
+
+stargazer(m_glm_15, summary = FALSE, type = "latex", out = here("tab",
+"m_glm_15.tex"))
+
+stargazer(m_glm_16, summary = FALSE, type = "latex", out = here("tab",
+                                                                "m_glm_16.tex"))
 ## comparing
 
 
@@ -105,9 +141,12 @@ glm_15_lat <- margins(glm, variables = "race5")
 
 pdf(file = here("fig", "prop_15_ame.pdf"))
 
-glm$coefficients
+
+
 
 pdf(file = "prop_15_ame.pdf")
+
+glm_15_lat$col[glm_15_lat$race5 == "Hispanic"] <- "red"
 plot(glm_15_lat, xaxt = "n")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Hispanic", "Asian", "Other"))
 dev.off()
@@ -118,3 +157,6 @@ pdf(file = here("fig", "prop_16_ame.pdf"))
 plot(glm_16_lat, xaxt = "none")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Hispanic", "Asian", "Other"))
 dev.off()
+
+
+
