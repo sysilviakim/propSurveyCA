@@ -57,7 +57,14 @@ reg_form <- function(x, vars, survey = FALSE) {
   }
 }
 
-## to make the latex tables - regressions
+# lpm function
+reg_form_lpm <- function(x, vars, data) {
+  lm(paste(x, "~", paste(unlist(var_list_lpm[vars]), 
+                   collapse = " + ")),
+  data = cal_subset, weight = weight_ca)
+}
+
+# to make the latex tables - regressions
 ## functions have been modified for specific layout
 
 stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {

@@ -18,25 +18,82 @@ cal_survey$party <- ifelse(
   cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3
 )
 
-# Regressions: ols and glm =====================================================
-ols <-lm(as.numeric(prop_15) ~ gender + age + race5 + educ + income3 + ca_region + 
-           party + elec_int_state + covid_response,
-         data = cal_subset, weight = weight_ca)
-glm <- glm(
+# Regressions: lpm and glm =====================================================
+
+# making prop_15 and 16 numeric
+cal_subset <- cal_subset %>% mutate(
+  prop_15_num = as.numeric(prop_15),
+  prop_16_num = as.numeric(prop_16)
+)
+
+# dv 
+y_num <- c(prop_15_num = "prop_15_num", prop_16_num = "prop_16_num")
+
+# list of models
+var_list_lpm <- list(
+  demo_geo = c("gender", "age", "race5", "educ", "income3", "ca_region"),
+  party = c("gender", "age", "race5", "educ", "income3", "ca_region", "pid3"),
+  all = c("gender", "age", "race5", "educ", "income3", "ca_region", "pid3",
+          "elec_int_state", "covid_response")
+)
+
+lpm <- list(
+  demo_geo = y_num %>%
+    map(~ reg_form_lpm(.x, vars = 1)),
+  demo_geo_party = y_num %>% 
+    map(~ reg_form_lpm(.x, vars = 2),
+  all = y_num %>% map(~ reg_form_lpm(.x, vars =3))
+))
+
+
+## GLM manual for marginal effects
+#mod 1 - 15
+demo_glm <- glm(
+  prop_15 ~ gender + age + race5 + educ + income3 + ca_region,
+  data = cal_subset, weight = weight_ca,
+  family = "quasibinomial"
+)
+
+# 16
+
+demo_glm_16 <- glm(
+  prop_16 ~ gender + age + race5 + educ + income3 + ca_region,
+  data = cal_subset, weight = weight_ca,
+  family = "quasibinomial"
+)
+
+#mod 2 - 15
+
+par_glm <- glm(
   prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
   data = cal_subset, weight = weight_ca,
   family = "quasibinomial"
 )
-ols_16 <- lm(as.numeric(prop_16) ~ gender + age + race5 + educ + income3 + ca_region + 
-                  party + elec_int_state + covid_response,
-                data = cal_subset, weight = weight_ca)
-glm_16 <- glm(
+
+#- 16 
+par_glm_16 <- glm(
+  prop_16 ~ gender + age + race5 + educ + income3 + ca_region + party +
+    elec_int_state + covid_response,
+  data = cal_subset, weight = weight_ca,
+  family = "quasibinomial"
+)
+
+#mod 3 -16
+full_glm <- glm(
+  prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
+    elec_int_state + covid_response,
+  data = cal_subset, weight = weight_ca,
+  family = "quasibinomial"
+)
+# 16
+
+full_glm_16 <- glm(
   prop_16 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
   data = cal_subset, weight = weight_ca, family = "quasibinomial"
 )
-summary(ols)
+
 
 ### dropping unused levels so margins works
 cal_survey$income3 <- droplevels(cal_survey$income3)
@@ -50,23 +107,6 @@ cal_survey$party <- ifelse(
 
 
 
-## regressions - ols and glm
-ols <- lm(as.numeric(prop_15) ~ unlist(list_vars_num), 
-               data = cal_survey, weights = weight_ca)
-glm <- glm(prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
-             elec_int_state + covid_response, 
-              data = cal_subset, weight = weight_ca, family = 
-             "quasibinomial")
-ols_16 <- lm(as.numeric(prop_16) ~ as.numeric(gender) + as.numeric(age) + 
-               as.numeric(race5) + as.numeric(educ) + as.numeric(income3) + 
-               as.numeric(ca_region) + as.numeric(party), 
-          data = cal_survey, weights = weight_ca)
-glm_16 <- glm(prop_16 ~ gender + age + race5 + educ + income3 + ca_region + party +
-             elec_int_state + covid_response, 
-           data = cal_subset, weight = weight_ca, family = 
-             "quasibinomial")
-summary(glm)
-summary(ols)
 ### margins 
 m_glm <- margins(glm)
 
@@ -77,7 +117,9 @@ m_glm_16 <- margins(glm_16) %>% summary() %>% as.data.frame()
 margins(glm)
 
 # Compare and export ===========================================================
-stargazer(ols, type = "latex", covariate.labels = c(
+# prop 15
+
+stargazer(lpm %>% map("prop_15_num"), type = "latex", covariate.labels = c(
   "Gender: Male", "Age", "Race: Black", "Race: Hispanic",
   "Race: Asian", "Race: Other", "Education: HS",
   "Education: Some College", "Education: 2-yr",
@@ -96,11 +138,12 @@ stargazer(ols, type = "latex", covariate.labels = c(
   "COVID Response: About as effective",
   "Constant"
 ), dep.var.labels = "Proposition 15", 
-          out = "ols.tex")
+          out = "lpm_15.tex")
 
-stargazer(ols_16, type = "latex", covariate.labels = c("Gender: Male", "Age", 
-                                                "Race: Black", "Race: Hispanic",
-  "Race: Asian", "Race: Other", "Education: HS",
+# prop 16 
+stargazer(lpm %>% map("prop_15_num"), type = "latex", 
+          covariate.labels = c("Gender: Male", "Age", "Race: Black",
+  "Race: Hispanic","Race: Asian", "Race: Other", "Education: HS",
   "Education: Some College", "Education: 2-yr",
   "Education: 4-yr", "Education: Post-grad",
   "Income: 50-100k", "Income: 100k+",
@@ -116,7 +159,7 @@ stargazer(ols_16, type = "latex", covariate.labels = c("Gender: Male", "Age",
   "COVID Response: Less effective than others",
   "COVID Response: About as effective",
   "Constant"), dep.var.labels = "Proposition 16", 
-          out = "ols_16.tex")
+          out = "lpm_16.tex")
 
 
 stargazer(m_glm_15, summary = FALSE, type = "latex", out = here("tab",
