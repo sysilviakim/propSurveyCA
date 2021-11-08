@@ -32,19 +32,17 @@ y_num <- c(prop_15_num = "prop_15_num", prop_16_num = "prop_16_num")
 # list of models
 var_list_lpm <- list(
   demo_geo = c("gender", "age", "race5", "educ", "income3", "ca_region"),
-  party = c("gender", "age", "race5", "educ", "income3", "ca_region", "pid3"),
-  all = c("gender", "age", "race5", "educ", "income3", "ca_region", "pid3",
+  party = c("gender", "age", "race5", "educ", "income3", "ca_region", "party"),
+  all = c("gender", "age", "race5", "educ", "income3", "ca_region", "party",
           "elec_int_state", "covid_response")
 )
 
+# LPM 
 lpm <- list(
-  demo_geo = y_num %>%
-    map(~ reg_form_lpm(.x, vars = 1)),
-  demo_geo_party = y_num %>% 
-    map(~ reg_form_lpm(.x, vars = 2),
-  all = y_num %>% map(~ reg_form_lpm(.x, vars =3))
-))
-
+  demo_geo = y_num %>% map(~ reg_form_lpm(.x, vars = 1)),
+  demo_geo_party = y_num %>% map(~ reg_form_lpm(.x, vars = 2)),
+  all = y_num %>% map(~ reg_form_lpm(.x, vars = 3))
+)
 
 ## GLM manual for marginal effects
 #mod 1 - 15
@@ -118,47 +116,13 @@ margins(glm)
 
 # Compare and export ===========================================================
 # prop 15
-
-stargazer(lpm %>% map("prop_15_num"), type = "latex", covariate.labels = c(
-  "Gender: Male", "Age", "Race: Black", "Race: Hispanic",
-  "Race: Asian", "Race: Other", "Education: HS",
-  "Education: Some College", "Education: 2-yr",
-  "Education: 4-yr", "Education: Post-grad",
-  "Income: 50-100k", "Income: 100k+",
-  "Income: Prefer not to say",
-  "CA Region: Central Valley/Inland", "CA Region: Coastal",
-  "CA Region: LA",
-  "CA Region: Southern California (non-LA)",
-  "Party: Rep", "Party: Other",
-  "Election Integrity: Somewhat confident",
-  "Election Integrity: Not too confident",
-  "Electoral Integrity: Not at all confident",
-  "Electoral Integrity: Don't know",
-  "COVID Response: Less effective than others",
-  "COVID Response: About as effective",
-  "Constant"
-), dep.var.labels = "Proposition 15", 
-          out = "lpm_15.tex")
+stargazer(lpm %>% map("prop_15_num"), type = "text", 
+          covariate.labels = covars_names,
+          dep.var.labels = "Proposition 15", out = "lpm_15.tex")
 
 # prop 16 
 stargazer(lpm %>% map("prop_15_num"), type = "latex", 
-          covariate.labels = c("Gender: Male", "Age", "Race: Black",
-  "Race: Hispanic","Race: Asian", "Race: Other", "Education: HS",
-  "Education: Some College", "Education: 2-yr",
-  "Education: 4-yr", "Education: Post-grad",
-  "Income: 50-100k", "Income: 100k+",
-  "Income: Prefer not to say",
-  "CA Region: Central Valley/Inland", "CA Region: Coastal",
-  "CA Region: LA",
-  "CA Region: Southern California (non-LA)",
-  "Party: Rep", "Party: Other",
-  "Election Integrity: Somewhat confident",
-  "Election Integrity: Not too confident",
-  "Electoral Integrity: Not at all confident",
-  "Electoral Integrity: Don't know",
-  "COVID Response: Less effective than others",
-  "COVID Response: About as effective",
-  "Constant"), dep.var.labels = "Proposition 16", 
+          covariate.labels = covars_names, dep.var.labels = "Proposition 16", 
           out = "lpm_16.tex")
 
 
