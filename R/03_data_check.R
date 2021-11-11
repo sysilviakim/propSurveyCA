@@ -37,7 +37,7 @@ pretty_condprob(cal_survey, "pid3", "Rep", "race5", "White")
 ## Covariates
 prop(cal_survey, "race5")
 
-# Weighted Table 1 =============================================================
+# Weighted Tables 1 and 2 ======================================================
 
 ## Prepping for weighting ======================================================
 ### Define Weight
@@ -56,8 +56,8 @@ cal_survey$age_groups <- cut(
   )
 )
 
-## Table 1: Proportion of “Yes” Responses, Weighted
-out_tab1 <- xvar %>%
+## Table 1: Proportion of "Yes" Responses, Weighted ============================
+out_list1 <- xvar %>%
   imap(
     ~ {
       form_15 <- as.formula(paste0("~ prop_15 + ", .x))
@@ -65,23 +65,80 @@ out_tab1 <- xvar %>%
       prop_15 <- round(prop.table(freq_15, margin = 2), digits = 3)
       form_16 <- as.formula(paste0("~ prop_16 + ", .x))
       freq_16 <- svytable(form_16, design = svy_design_tab)
-      prop_16 <- round(prop.table(freq_15, margin = 2), digits = 3)
+      prop_16 <- round(prop.table(freq_16, margin = 2), digits = 3)
       return(
         list(
-          freq_15 = freq_15, prop_15 = prop_15,
-          freq_16 = freq_16, prop_16 = prop_16
+          prop_15 = list(freq = freq_15, prop = prop_15),
+          prop_16 = list(freq = freq_16, prop = prop_16)
         )
       )
     }
   )
 
-## Table 2: Party ID and Race, Weighted Proportions
-out_tab2 <- round(
+out_tab1 <- c(15, 16) %>%
+  map(
+    function(x) {
+      out_list1 %>%
+        map(paste0("prop_", x)) %>%
+        map("prop") %>%
+        imap_dfr(
+          ~ .x %>%
+            t() %>%
+            as.data.frame.matrix() %>%
+            select(!!as.name(paste0("Prop. ", x)) := Yes) %>%
+            mutate(
+              Var = simple_cap(.y),
+              !!as.name(paste0("Prop. ", x)) := formatC(
+                !!as.name(paste0("Prop. ", x)) * 100,
+                digits = 1, format = "f"
+              )
+            ) %>%
+            rownames_to_column("Variables") %>%
+            select(Var, Variables, everything())
+        )
+    }
+  ) %>%
+  Reduce(left_join, .) %>%
+  mutate(
+    Variables = case_when(
+      Variables == "F" ~ "Female",
+      Variables == "M" ~ "Male",
+      TRUE ~ Variables
+    ),
+    Variables = paste("---", Variables)
+  )
+
+addtorow <- list(
+  pos = unname(xvar[-length(xvar)]) %>%
+    map_dbl(~ length(unique(cal_survey[[.x]]))) %>%
+    c(0, .) %>%
+    cumsum() %>%
+    as.list()
+)
+addtorow$command <- paste(
+  "\\midrule \n \\textbf{", c("Age", "Gender", "Race", "Party"), "} & \\\\\n"
+)
+
+print.xtable(
+  xtable(
+    out_tab1 %>% select(-Var),
+    caption = "Proportion of ``Yes'' Response, Weighted",
+    label = "tab:desc", align = "llrr"
+  ),
+  booktabs = TRUE, include.rownames = FALSE, add.to.row = addtorow,
+  file = here("tab", "desc_weighted.tex"), 
+  hline.after = c(-1, nrow(out_tab1)),
+  sanitize.colnames.function = 
+    function(x) paste("{\\textbf{", x, "}}", sep = "")
+)
+
+## Table 2: Party ID and Race, Weighted Proportions ============================
+out_tab2 <- formatC(
   prop.table(
     svytable(~ race5 + party, design = svy_design_tab),
     margin = 1
   ) * 100,
-  digits = 1
+  digits = 1, format = "f"
 ) %>%
   t() %>%
   as.data.frame.matrix() %>%
@@ -97,9 +154,11 @@ out_tab2 <- round(
 print.xtable(
   xtable(
     out_tab2,
-    caption = "Party ID and Race, Weighted Proportions", digits = 1,
-    label = "tab:party_race_comp"
+    caption = "Party ID and Race, Weighted Proportions",
+    label = "tab:party_race_comp", align = "llrrrrr"
   ),
   booktabs = TRUE, include.rownames = FALSE,
-  file = here("tab", "pid_race_proportion.tex")
+  file = here("tab", "pid_race_proportion.tex"),
+  sanitize.colnames.function = 
+    function(x) paste("{\\textbf{", x, "}}", sep = "")
 )

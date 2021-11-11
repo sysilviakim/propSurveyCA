@@ -24,6 +24,7 @@ library(gmodels)
 library(huxtable) ## export_summs in jtools need this
 library(flextable)
 library(Kmisc) ## install_github("sysilviakim/Kmisc")
+library(Hmisc) ## latexTranslate
 
 # Subdirectories ===============================================================
 if (!dir.exists(here("R", "eda"))) {
