@@ -335,3 +335,21 @@ stargazer_custom_odds <- function(x, type = "text", lab = c(15, 16)) {
     type = type
   )
 }
+
+desc_table <- function(x, y, variable) {
+  prop_labels %>%
+    map_dfr(
+      ~ {
+        tabyl(
+          dat = x,
+          !!as.name(paste0("prop_", .x)),
+          .y,
+          type = "f"
+        ) %>%
+          mutate(across(where(is.factor), as.character)) %>%
+          adorn_percentages("col") %>%
+          adorn_pct_formatting(digits = 2) %>%
+          unite("front")
+      }
+    )
+}
