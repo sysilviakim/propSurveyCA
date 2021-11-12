@@ -102,6 +102,7 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
     x,
     omit = "Constant",
     covariate.labels = covars_names,
+    label = ifelse(lab == 15, "tab:reg_prop15_long", "tab:reg_prop16_long"),
     dep.var.labels = ifelse(
       lab == 15,
       "Support Proposition 15",
@@ -136,6 +137,7 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
 stargazer_tex_omit <- function(x, type = "latex", lab = c(15, 16)) {
   stargazer(
     x,
+    label = ifelse(lab == 15, "tab:reg_prop15_short", "tab:reg_prop16_short"),
     omit = c(
       "Constant", "gender", "age", "educ",
       "income3", "ca_region"
