@@ -1,92 +1,78 @@
 source(here::here("R", "05_reg_prelim.R"))
 
-# Using the nested model =======================================================
-### Prop. 15 using nested model
-beta <- model_weight$all$prop_15$coefficients
-covmat.beta <- vcov(model_weight$all$prop_15)
+# Basic setup ==================================================================
 ndraws <- 1000
-betadraw <- mvrnorm(ndraws, beta, covmat.beta)
-baseline.x <- apply(model_weight$all$prop_15$x, 2, min)
+pvec <- c(0.5, 0.025, 0.975)
+set.seed(123)
+base_vec <- c(prop_15 = "prop_15", prop_16 = "prop_16")
 
-hypo.case_15 <- baseline.x
-simprob.A0 <- plogis(betadraw %*% hypo.case_15)
+# Using the nested model =======================================================
+beta <- model_weight$all %>%
+  map("coefficients")
 
-hypo.case_15["race5Hispanic"] <- 1
-simprob.B0 <- plogis(betadraw %*% hypo.case_15)
+covmat.beta <- model_weight$all %>%
+  map(vcov)
 
-simprob.diff0 <- simprob.B0 - simprob.A0
-summary(hypo.case_15)
+betadraw <- base_vec %>%
+  imap(~ mvrnorm(ndraws, beta[[.x]], covmat.beta[[.x]]))
 
-### Prop. 16 using nested model
-beta_16 <- model_weight$all$prop_16$coefficients
-covmat.beta_16 <- vcov(model_weight$all$prop_16)
-betadraw_16 <- mvrnorm(ndraws, beta_16, covmat.beta_16)
-baseline.x_16 <- apply(model_weight$all$prop_16$x, 2, min)
+baseline.x <- model_weight$all %>%
+  map("x") %>%
+  map(~ apply(.x, 2, min))
 
-hypo.case_16 <- baseline.x_16
-simprob.A1 <- plogis(betadraw_16 %*% hypo.case_16)
+out <- base_vec %>%
+  imap_dfr(
+    ~ {
+      ## Hypothetical cases
+      hypo.case <- baseline.x[[.x]]
+      assert_that(hypo.case["race5Hispanic"] == 0)
+      simprob.0 <- plogis(betadraw[[.x]] %*% hypo.case)
+      hypo.case["race5Hispanic"] <- 1
+      simprob.1 <- plogis(betadraw[[.x]] %*% hypo.case)
+      
+      ## difference
+      diff <- simprob.1 - simprob.0
+      
+      ## three sets of quantiles and s.d.
+      qt.diff <- quantile(diff, probs = pvec)
+      sd.diff <- sd(diff)
+      qt.0 <- quantile(simprob.0, probs = pvec)
+      sd.0 <- sd(simprob.0)
+      qt.1 <- quantile(simprob.1, probs = pvec)
+      sd.1 <- sd(simprob.1)
+      
+      return(
+        tibble(
+          ## Suppress label
+          ` ` = paste0(
+            ## paste0("Prop. ", parse_number(.y), ": "), 
+            "--- ", c("Non-Latino", "Latino", "Difference")
+          ),
+          Median = list(qt.0, qt.1, qt.diff) %>% map_dbl("50%"),
+          `2.5%` = list(qt.0, qt.1, qt.diff) %>% map_dbl("2.5%"),
+          `97.5%` = list(qt.0, qt.1, qt.diff) %>% map_dbl("97.5%"),
+          `s.e.` = c(sd.0, sd.1, sd.diff)
+        )
+      )
+    }
+  )
 
-hypo.case_16["race5Hispanic"] <- 1
-simprob.B1 <- plogis(betadraw_16 %*% hypo.case_16)
-
-simprob.diff1 <- simprob.B1 - simprob.A1
-summary(hypo.case_16)
-
-simprob_total <- simprob.diff1 - simprob.diff0
-
-results.A0 <- append(
-  quantile(simprob.A0, probs = c(0.5, 0.025, 0.975)),
-  sd(simprob.A0)
+# Export to xtable =============================================================
+addtorow <- list(pos = list(0, 3))
+addtorow$command <- paste(
+  "\\midrule \n \\textbf{", c("Proposition 15", "Proposition 16"), "} & \\\\\n"
 )
-results.B0 <- append(
-  quantile(simprob.B0, probs = c(0.5, 0.025, 0.975)),
-  sd(simprob.B0)
-)
-results.diff0 <- append(
-  quantile(simprob.diff0, probs = c(0.5, 0.025, 0.975)),
-  sd(simprob.diff0)
-)
 
-results.A1 <- append(
-  quantile(simprob.A1, probs = c(0.5, 0.025, 0.975)),
-  sd(simprob.A1)
-)
-results.B1 <- append(
-  quantile(simprob.B1, probs = c(0.5, 0.025, 0.975)),
-  sd(simprob.B1)
-)
-results.diff1 <- append(
-  quantile(simprob.diff1, probs = c(0.5, 0.025, 0.975)),
-  sd(simprob.diff1)
-)
-
-results.dd <- append(
-  quantile(simprob_total, probs = c(0.5, 0.025, 0.975)),
-  sd(simprob_total)
-)
-
-first.differences <- rbind(
-  results.A0, results.B0, results.diff0, results.A1,
-  results.B1, results.diff1, results.dd
-)
-colnames(first.differences) <- c("Median", "2.5%", "97.5%", "(se)")
-rownames(first.differences) <- c(
-  "Prop. 15: Non-Latino", "Prop. 15: Latino",
-  "Prop. 15 Difference", "Prop. 16: Non-Latino",
-  "Prop. 16: Latino", "Prop. 16 Difference",
-  "Difference: Prop. 15 and Prop. 16"
-)
-xtable(
-  round(first.differences, digits = 3), 
-  file = "first_differences.tex"
-)
-###### Using lists
-
-prop_coefs <- list(
-  model_weight$all$prop_15$coefficients,
-  model_weight$all$prop_16$coefficients
-)
-prop_xs <- list(
-  model_weight$all$prop_15$x,
-  model_weight$all$prop_16$x
+print.xtable(
+  xtable(
+    out,
+    label = "tab:first_diff", align = "llrrrr",
+    caption = paste0(
+      "First Differences in the Expected Probabilities ",
+      "for Latinos and Non-Latinos"
+    )
+  ),
+  file = here("tab", "first_diff.tex"),
+  booktabs = TRUE, include.rownames = FALSE, add.to.row = addtorow,
+  hline.after = c(-1, nrow(out))
 )
