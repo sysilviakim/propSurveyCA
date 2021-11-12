@@ -126,8 +126,8 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
     ),
     out = ifelse(
       lab == 15,
-      here("tab", "reg_prop15_mod.tex"),
-      here("tab", "reg_prop16_mod.tex")
+      here("tab", "reg_prop15_long.tex"),
+      here("tab", "reg_prop16_long.tex")
     )
   )
 }
@@ -170,8 +170,8 @@ stargazer_tex_omit <- function(x, type = "latex", lab = c(15, 16)) {
     ),
     out = ifelse(
       lab == 15,
-      here("tab", "reg_prop15_modified.tex"),
-      here("tab", "reg_prop16_modified.tex")
+      here("tab", "reg_prop15_short.tex"),
+      here("tab", "reg_prop16_short.tex")
     )
   )
 }
@@ -210,8 +210,8 @@ stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
     ),
     out = ifelse(
       lab == 15,
-      here("tab", "prop15_oddratios_mod.tex"),
-      here("tab", "prop16_oddratios_mod.tex")
+      here("tab", "prop15_oddratios_long.tex"),
+      here("tab", "prop16_oddratios_long.tex")
     )
   )
 }
