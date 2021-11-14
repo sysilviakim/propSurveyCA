@@ -73,8 +73,10 @@ cal_survey <- cal_survey %>%
       labels = c("Dem", "Rep", "Independent", "Other", "Not sure")
     ),
     ## Collapsing Party ID into Dem, Rep, or Other variable
-    party = ifelse(
-      pid3 != "Dem" & pid3 != "Rep", "Other", pid3
+    party = case_when(
+      pid3 != "Dem" & pid3 != "Rep" ~ "Other", 
+      pid3 == "Dem" ~ "Dem",
+      pid3 == "Rep" ~ "Rep"
     ),
     pid7 = factor(
       pid7,
