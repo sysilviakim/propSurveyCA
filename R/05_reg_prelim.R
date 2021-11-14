@@ -7,14 +7,9 @@ y <- c(prop_15 = "prop_15", prop_16 = "prop_16")
 
 ## Variable list
 var_list <- list(
-  null = "1",
   demo = c("gender", "age", "race5", "educ", "income3"),
-  demo2 = c("gender", "age", "race5", "educ_cont", "income3"), ## continuous
   geo = "ca_region",
-  pid3 = "pid3",
   party = "party",
-  poli1 = "elec_int_state",
-  poli2 = "covid_response",
   poli_all = c("elec_int_state", "covid_response")
 )
 model_nested <- c("demo", "geo", "party", "poli_all")
@@ -53,3 +48,14 @@ prop_16_short <- stargazer_tex_omit(model_weight %>% map("prop_16"), lab = 16)
 prop15_odds <- stargazer_odds_tex(model_weight %>% map("prop_15"), lab = 15)
 prop16_odds <- stargazer_odds_tex(model_weight %>% map("prop_16"), lab = 16)
 
+# Generational differences? ====================================================
+all_by_gen <- cal_subset %>%
+  group_by(age_groups) %>%
+  group_split() %>%
+  `names<-`({.} %>% map(~ .x$age_groups[1]) %>% unlist()) %>%
+  imap(
+    ~ {
+      sv_design <- svydesign(id = ~1, weights = ~weight_ca, data = .x)
+      return(y %>% map(~ reg_form(.x, model_nested, survey = TRUE)))
+    }
+  )
