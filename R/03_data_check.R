@@ -46,16 +46,6 @@ svy_design_tab <- svydesign(~1, data = cal_survey, weights = ~weight_ca)
 ## Define named vector for purrr::map
 xvar <- c(age = "age_groups", gen = "gender", race = "race5", party = "pid3")
 
-## Age group variable
-cal_survey$age_groups <- cut(
-  cal_survey$age,
-  breaks = c(0, 25, 41, 57, 76, 120),
-  labels = c(
-    "Gen Z (18-24)", "Milennial (25-40)",
-    "Gen X (41-56)", "Boomer (57-75)", "Silent (75+)"
-  )
-)
-
 ## Table 1: Proportion of "Yes" Responses, Weighted ============================
 out_list1 <- xvar %>%
   imap(
