@@ -82,7 +82,7 @@ par_glm_16 <- glm(
 )
 
 # mod 3 -16
-full_glm <- glm(
+full_glm_15 <- glm(
   prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
   data = cal_subset, weight = weight_ca,
@@ -104,55 +104,39 @@ cal_subset$covid_response <- droplevels(cal_subset$covid_response)
 cal_survey$party <- ifelse(
   cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3
 )
-
-### margins
-m_glm <- margins(glm)
-
 # Margins calculations =========================================================
-m_glm_15 <- m_glm %>%
+m_glm_15 <- margins(full_glm_15) %>%
   summary() %>%
   as.data.frame()
-m_glm_16 <- margins(glm_16) %>%
+m_glm_16 <- margins(full_glm_16) %>%
   summary() %>%
   as.data.frame()
-
-margins(glm)
-
 # Compare and export ===========================================================
 # prop 15
 stargazer(
   lpm %>% map("prop_15_num"),
   covariate.labels = covars_names, dep.var.labels = "Proposition 15",
-  out = here("tab", "lpm_15.tex")
+  out = here("tab", "lpm_prop15.tex")
 )
 
 # prop 16
 stargazer(
   lpm %>% map("prop_16_num"),
   covariate.labels = covars_names, dep.var.labels = "Proposition 16",
-  out = here("tab", "lpm_16.tex")
+  out = here("tab", "lpm_prop16.tex")
 )
 
 stargazer(
   m_glm_15,
   summary = FALSE, type = "latex",
-  out = here("tab", "m_glm_15.tex")
+  out = here("tab", "mar_glm_15.tex")
 )
 
 stargazer(
   m_glm_16,
   summary = FALSE, type = "latex",
-  out = here("tab", "m_glm_16.tex")
+  out = here("tab", "mar_glm_16.tex")
 )
-
-## comparing
-stargazer(ols, type = "text", out = "ols.tex")
-
-ols_m <- margin(ols_16)
-stargazer(ols_16, type = "text", out = "ols.tex")
-
-export_summs(ols, model_weight$all$prop_15, type = "text")
-export_summs(m_glm_16, type = "text")
 
 ## Plots to match the plot from Fisk article
 glm_15_lat <- margins(glm, variables = "race5")
