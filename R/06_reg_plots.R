@@ -1,54 +1,19 @@
 source(here::here("R", "05_reg_prelim.R"))
 
-# Breaking down model list into separate ones by proposition ===================
-model_tidy <- model_weight$all %>%
-  map(
-    ~ bind_cols(
-      tidy(.x),
-      as.data.frame(confint(.x))
-    ) %>%
-      rename("conf.low" = "2.5 %", "conf.high" = "97.5 %") %>%
-      filter(grepl("race5", term)) %>%
-      mutate(term = gsub("race5", "", term))
-  )
-
 # Creating plots ===============================================================
-p_list <- model_tidy %>%
-  imap(
-    ~ ggplot(.x, aes(term, estimate, color = term)) +
-      geom_point() +
-      geom_pointrange(size = 1.2, aes(ymin = conf.low, ymax = conf.high)) +
-      labs(
-        x = "Race",
-        y = paste0(
-          "Proposition ", ifelse(grepl("15", .y), 15, 16), " (95% C.I.)"
-        ),
-        color = "Race"
-      ) +
-      scale_colour_manual(
-        values = c(
-          "Black" = "gray24",
-          "Hispanic" = "red1",
-          "Asian" = "gray24",
-          "Other" = "gray24"
+p_list <- model_weight$all %>%
+  map(tidy_race) %>%
+  imap(race_highlight)
+
+p_by_gen <- all_by_gen %>%
+  map(
+    function(x) x %>%
+      map(tidy_race) %>%
+      imap(
+        ~ race_highlight(
+          .x, .y, my_theme = FALSE, 
+          limits = c(-0.5, 2.0), breaks = seq(-0.5, 2.0, by = 0.5)
         )
-      ) +
-      geom_hline(yintercept = 0) +
-      scale_y_continuous(
-        limits = c(-.75, 1.8), breaks = seq(1.8, -.75, by = -.25),
-        labels =
-          scales::number_format(accuracy = 0.01), oob = rescale_none
-      ) +
-      annotate("rect", fill = "lightgray", alpha = 0.4) +
-      ggtitle(
-        paste0(
-          "Full Model, Prop. ", ifelse(grepl("15", .y), 15, 16), " and Race"
-        )
-      ) +
-      theme(
-        axis.title.x = element_text(size = 14),
-        axis.text.x = element_text(size = 12),
-        axis.title.y = element_text(size = 14)
       )
   )
 
@@ -59,4 +24,22 @@ dev.off()
 
 pdf(file = here("fig", "plot15_upd.pdf"), width = 4, height = 3)
 print(plot_nolegend(pdf_default(p_list$prop_15)))
+dev.off()
+
+pdf(file = here("fig", "plot15_bygen.pdf"), width = 5, height = 4)
+within(p_by_gen, rm("Silent (75+)")) %>%
+  map("prop_15") %>%
+  map(pdf_default) %>%
+  imap(~ .x + ggtitle(.y)) %>%
+  map(~ .x + theme(axis.title = element_blank(), legend.position = "none")) %>%
+  Kmisc::grid_arrange_shared_legend(list = ., ncol = 2, nrow = 2)
+dev.off()
+
+pdf(file = here("fig", "plot16_bygen.pdf"), width = 5, height = 4)
+within(p_by_gen, rm("Silent (75+)")) %>%
+  map("prop_16") %>%
+  map(pdf_default) %>%
+  imap(~ .x + ggtitle(.y)) %>%
+  map(~ .x + theme(axis.title = element_blank(), legend.position = "none")) %>%
+  Kmisc::grid_arrange_shared_legend(list = ., ncol = 2, nrow = 2)
 dev.off()
