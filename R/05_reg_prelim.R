@@ -19,10 +19,18 @@ sv_design <- svydesign(id = ~1, weights = ~weight_ca, data = cal_subset)
 
 # Model with weights (education is categorical) ================================
 model_weight <- list(
-  # null = y %>% map(~ reg_form(.x, "null", survey = TRUE)),
-  demo_geo = y %>% map(~ reg_form(.x, model_nested[1:2], survey = TRUE)),
-  demo_geo_party = y %>% map(~ reg_form(.x, model_nested[1:3], survey = TRUE)),
-  all = y %>% map(~ reg_form(.x, model_nested, survey = TRUE))
+  demo_geo = y %>%
+    map(
+      ~ reg_form(.x, model_nested[1:2], cal_subset, sv_design, survey = TRUE)
+    ),
+  demo_geo_party = y %>% 
+    map(
+      ~ reg_form(.x, model_nested[1:3], cal_subset, sv_design, survey = TRUE)
+    ),
+  all = y %>% 
+    map(
+      ~ reg_form(.x, model_nested, cal_subset, sv_design, survey = TRUE)
+    )
 )
 
 ## to see the table from paper
@@ -48,14 +56,34 @@ prop_16_short <- stargazer_tex_omit(model_weight %>% map("prop_16"), lab = 16)
 prop15_odds <- stargazer_odds_tex(model_weight %>% map("prop_15"), lab = 15)
 prop16_odds <- stargazer_odds_tex(model_weight %>% map("prop_16"), lab = 16)
 
-# Generational differences? ====================================================
+# Subgroup differences? ========================================================
 all_by_gen <- cal_subset %>%
   group_by(age_groups) %>%
   group_split() %>%
   `names<-`({.} %>% map(~ .x$age_groups[1]) %>% unlist()) %>%
-  imap(
-    ~ {
-      sv_design <- svydesign(id = ~1, weights = ~weight_ca, data = .x)
-      return(y %>% map(~ reg_form(.x, model_nested, survey = TRUE)))
-    }
+  map(
+    ~ y %>%
+      map(
+        function(x) reg_form(
+          x, vars = model_nested, data = .x, 
+          sv_design = svydesign(id = ~1, weights = ~weight_ca, data = .x), 
+          survey = TRUE
+        )
+      )
   )
+
+all_by_party <- cal_subset %>%
+  group_by(party) %>%
+  group_split() %>%
+  `names<-`({.} %>% map(~ .x$party[1]) %>% unlist()) %>%
+  map(
+    ~ y %>%
+      map(
+        function(x) reg_form(
+          x, vars = model_nested[model_nested != "party"], data = .x, 
+          sv_design = svydesign(id = ~1, weights = ~weight_ca, data = .x), 
+          survey = TRUE
+        )
+      )
+  )
+

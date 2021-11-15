@@ -32,7 +32,7 @@ if (!dir.exists(here("R", "eda"))) {
 }
 
 # Functions ====================================================================
-reg_form <- function(x, vars, survey = FALSE) {
+reg_form <- function(x, vars, data, sv_design, survey = FALSE) {
   if (survey == TRUE) {
     svyglm(
       as.formula(
@@ -48,7 +48,7 @@ reg_form <- function(x, vars, survey = FALSE) {
       as.formula(
         paste0(x, " ~ ", paste(var_list[vars] %>% unlist(), collapse = " + "))
       ),
-      data = cal_subset,
+      data = data,
       family = "binomial", x = TRUE
     )
   }
@@ -365,16 +365,14 @@ tidy_race <- function(x) {
 
 race_highlight <- function(x, y, 
                            my_theme = TRUE,
-                           limits = c(-.75, 1.8),
-                           breaks = seq(-.75, 1.8, by = .25)) {
+                           limits = c(-.5, 2.0),
+                           breaks = seq(-.5, 2.0, by = .5)) {
   p <- ggplot(x, aes(term, estimate, color = term)) +
     geom_point() +
     geom_pointrange(size = 1.2, aes(ymin = conf.low, ymax = conf.high)) +
     labs(
       x = "Race",
-      y = paste0(
-        "Proposition ", ifelse(grepl("15", y), 15, 16), " (95% C.I.)"
-      ),
+      y = "Estimated Support (95% C.I.)",
       color = "Race"
     ) +
     scale_colour_manual(
