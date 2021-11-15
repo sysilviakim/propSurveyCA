@@ -13,12 +13,6 @@ model_tidy <- model_weight$all %>%
   )
 
 # Creating plots ===============================================================
-My_Theme <- theme(
-  axis.title.x = element_text(size = 14),
-  axis.text.x = element_text(size = 12),
-  axis.title.y = element_text(size = 14)
-)
-
 p_list <- model_tidy %>%
   imap(
     ~ ggplot(.x, aes(term, estimate, color = term)) +
@@ -46,8 +40,16 @@ p_list <- model_tidy %>%
           scales::number_format(accuracy = 0.01), oob = rescale_none
       ) +
       annotate("rect", fill = "lightgray", alpha = 0.4) +
-      ggtitle("Model 3, Prop. 15 and Race") +
-      My_Theme
+      ggtitle(
+        paste0(
+          "Full Model, Prop. ", ifelse(grepl("15", .y), 15, 16), " and Race"
+        )
+      ) +
+      theme(
+        axis.title.x = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.title.y = element_text(size = 14)
+      )
   )
 
 # Export =======================================================================
