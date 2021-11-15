@@ -78,6 +78,7 @@ cal_survey <- cal_survey %>%
       pid3 == "Dem" ~ "Dem",
       pid3 == "Rep" ~ "Rep"
     ),
+    party = factor(party, levels = c("Dem", "Rep", "Other")),
     pid7 = factor(
       pid7,
       levels = seq(8),
