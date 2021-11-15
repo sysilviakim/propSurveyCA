@@ -352,3 +352,60 @@ desc_table <- function(x, y, variable) {
       }
     )
 }
+
+tidy_race <- function(x) {
+  bind_cols(
+    tidy(x),
+    as.data.frame(confint(x))
+  ) %>%
+    rename("conf.low" = "2.5 %", "conf.high" = "97.5 %") %>%
+    filter(grepl("race5", term)) %>%
+    mutate(term = gsub("race5", "", term))
+}
+
+race_highlight <- function(x, y, 
+                           my_theme = TRUE,
+                           limits = c(-.75, 1.8),
+                           breaks = seq(-.75, 1.8, by = .25)) {
+  p <- ggplot(x, aes(term, estimate, color = term)) +
+    geom_point() +
+    geom_pointrange(size = 1.2, aes(ymin = conf.low, ymax = conf.high)) +
+    labs(
+      x = "Race",
+      y = paste0(
+        "Proposition ", ifelse(grepl("15", y), 15, 16), " (95% C.I.)"
+      ),
+      color = "Race"
+    ) +
+    scale_colour_manual(
+      values = c(
+        "Black" = "gray24",
+        "Hispanic" = "red1",
+        "Asian" = "gray24",
+        "Other" = "gray24"
+      )
+    ) +
+    geom_hline(yintercept = 0) +
+    scale_y_continuous(
+      limits = limits, breaks = breaks,
+      labels =
+        scales::number_format(accuracy = 0.01), oob = rescale_none
+    ) +
+    annotate("rect", fill = "lightgray", alpha = 0.4) +
+    ggtitle(
+      paste0(
+        "Full Model, Prop. ", ifelse(grepl("15", y), 15, 16), " and Race"
+      )
+    )
+  
+  if (my_theme) {
+    p +
+      theme(
+        axis.title.x = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.title.y = element_text(size = 14)
+      )
+  } else {
+    p
+  }
+}
