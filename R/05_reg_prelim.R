@@ -87,11 +87,7 @@ all_by_party <- cal_subset %>%
       )
   )
 
-### Power Analysis =============================================================
-pwr.f2.test(u = 2201, )
-library(car)
-anova(full_glm_15, type = "LRT")
-eta_sq <- 13.71/(13.71+2.07+84.30+45.85+13.14+32.7+374.25+116.75+29.56)
-f_2 <- eta_sq /(1-eta_sq)
-pwr.f2.test(u = 4, v = 2201, f2 = f_2, sig.level = .05)
+
+
+
 
