@@ -378,7 +378,7 @@ race_highlight <- function(x, y,
     scale_colour_manual(
       values = c(
         "Black" = "gray24",
-        "Hispanic" = "red1",
+        "Latino" = "red1",
         "Asian" = "gray24",
         "Other" = "gray24"
       )

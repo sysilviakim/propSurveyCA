@@ -23,19 +23,19 @@ cal_survey <- cal_survey %>%
       race,
       levels = seq(8),
       labels = c(
-        "White", "Black", "Hispanic", "Asian", "Native American",
+        "White", "Black", "Latino", "Asian", "Native American",
         "Two or More", "Other", "Middle Eastern"
       )
     ),
     race4 = factor(
       race4,
       levels = seq(4),
-      labels = c("White", "Black", "Hispanic", "Other")
+      labels = c("White", "Black", "Latino", "Other")
     ),
     race5 = factor(
       race5,
       levels = seq(5),
-      labels = c("White", "Black", "Hispanic", "Asian", "Other")
+      labels = c("White", "Black", "Latino", "Asian", "Other")
     ),
     # ordered?
     educ_cont = as.numeric(educ),
