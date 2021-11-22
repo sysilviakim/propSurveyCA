@@ -25,6 +25,7 @@ library(huxtable) ## export_summs in jtools need this
 library(flextable)
 library(Kmisc) ## install_github("sysilviakim/Kmisc")
 library(Hmisc) ## latexTranslate
+library(pwr)
 
 # Subdirectories ===============================================================
 if (!dir.exists(here("R", "eda"))) {

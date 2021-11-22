@@ -1,7 +1,8 @@
 source(here::here("R", "05_reg_prelim.R"))
 
 ### margins -- use purrr map and margins_summary instead -----------
-margins_summary(model_weight$all$prop_16, data = cal_subset, design = sv_design)
+
+# Varying lengths (NAs?)
 model_weight$all %>%
   map(~ margins_summary(.x, data = cal_subset, design = sv_design))
 
@@ -9,15 +10,6 @@ model_weight$all %>%
 mapply(margins_summary,
   model = model_weight$all, data = cal_subset,
   design = sv_design
-)
-
-# Clean data ===================================================================
-## dropping unused levels so margins works
-cal_subset <- cal_subset %>%
-  droplevels()
-
-cal_survey$party <- ifelse(
-  cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3
 )
 
 # Regressions: lpm and glm =====================================================
@@ -97,15 +89,13 @@ full_glm_16 <- glm(
 )
 
 ### dropping unused levels so margins works
-cal_survey$income3 <- droplevels(cal_survey$income3)
+
 cal_subset$elec_int_state <- droplevels(cal_subset$elec_int_state)
 cal_subset$covid_response <- droplevels(cal_subset$covid_response)
 
-cal_survey$party <- ifelse(
-  cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3
-)
 # Margins calculations =========================================================
-m_glm_15 <- margins(full_glm_15) %>%
+m_glm_15 <- margins(full_glm_15) 
+%>%
   summary() %>%
   as.data.frame()
 m_glm_16 <- margins(full_glm_16) %>%
@@ -139,7 +129,7 @@ stargazer(
 )
 
 ## Plots to match the plot from Fisk article
-glm_15_lat <- margins(glm, variables = "race5")
+glm_15_lat <- margins(full_glm_15, variables = "race5")
 
 pdf(file = here("fig", "prop_15_ame.pdf"))
 glm_15_lat$col[glm_15_lat$race5 == "Hispanic"] <- "red"
@@ -147,9 +137,11 @@ plot(glm_15_lat, xaxt = "n")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Hispanic", "Asian", "Other"))
 dev.off()
 
-glm_16_lat <- margins(glm_16, variables = "race5")
+glm_16_lat <- margins(full_glm_16, variables = "race5")
 
 pdf(file = here("fig", "prop_16_ame.pdf"))
 plot(glm_16_lat, xaxt = "none")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Hispanic", "Asian", "Other"))
 dev.off()
+
+
