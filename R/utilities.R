@@ -66,7 +66,7 @@ reg_form_lpm <- function(x, vars, data) {
 
 # covariate labels as vectors 
 covars_names <- c(
-  "Gender: Male", "Age", "Race: Black", "Race: Hispanic",
+  "Gender: Male", "Age", "Race: Black", "Race: Hispanic/Latino",
   "Race: Asian", "Race: Other", "Education: HS",
   "Education: Some College", "Education: 2-yr",
   "Education: 4-yr", "Education: Post-grad",
@@ -86,7 +86,7 @@ covars_names <- c(
 )
 
 short_covars_names <- c(
-  "Race: Black", "Race: Hispanic",
+  "Race: Black", "Race: Hispanic/Latino",
   "Race: Asian", "Race: Other", "Party: Rep", "Party: Other",
   "Election Integrity: Somewhat confident",
   "Election Integrity: Not too confident",
@@ -222,7 +222,7 @@ stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
   stargazer(
     x,
     omit = c(
-      "Constant", "Gender: Male", "Age", "Race: Black", "Race: Hispanic",
+      "Constant", "Gender: Male", "Age", "Race: Black", "Race: Hispanic/Latino",
       "Race: Asian", "Race: Other", "Education: HS",
       "Education: Some College", "Education: 2-yr",
       "Education: 4-yr", "Education: Post-grad",
@@ -233,7 +233,7 @@ stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
       "CA Region: Southern California (non-LA)"
     ),
     # omit.labels = c(
-    #   "Constant","Gender: Male", "Age", "Race: Black", "Race: Hispanic",
+    #   "Constant","Gender: Male", "Age", "Race: Black", "Race: Hispanic/Latino",
     #   "Race: Asian", "Race: Other", "Education: HS",
     #   "Education: Some College", "Education: 2-yr",
     #   "Education: 4-yr", "Education: Post-grad",

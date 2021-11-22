@@ -25,9 +25,9 @@ out <- base_vec %>%
     ~ {
       ## Hypothetical cases
       hypo.case <- baseline.x[[.x]]
-      assert_that(hypo.case["race5Hispanic"] == 0)
+      assert_that(hypo.case["race5Latino"] == 0)
       simprob.0 <- plogis(betadraw[[.x]] %*% hypo.case)
-      hypo.case["race5Hispanic"] <- 1
+      hypo.case["race5Latino"] <- 1
       simprob.1 <- plogis(betadraw[[.x]] %*% hypo.case)
       
       ## difference

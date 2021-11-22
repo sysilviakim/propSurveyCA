@@ -158,14 +158,14 @@ export_summs(m_glm_16, type = "text")
 glm_15_lat <- margins(glm, variables = "race5")
 
 pdf(file = here("fig", "prop_15_ame.pdf"))
-glm_15_lat$col[glm_15_lat$race5 == "Hispanic"] <- "red"
+glm_15_lat$col[glm_15_lat$race5 == "Latino"] <- "red"
 plot(glm_15_lat, xaxt = "n")
-axis(1, at = seq(1, 4, 1), labels = c("Black", "Hispanic", "Asian", "Other"))
+axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
 dev.off()
 
 glm_16_lat <- margins(glm_16, variables = "race5")
 
 pdf(file = here("fig", "prop_16_ame.pdf"))
 plot(glm_16_lat, xaxt = "none")
-axis(1, at = seq(1, 4, 1), labels = c("Black", "Hispanic", "Asian", "Other"))
+axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
 dev.off()
