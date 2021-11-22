@@ -1,7 +1,8 @@
 source(here::here("R", "05_reg_prelim.R"))
 
 ### margins -- use purrr map and margins_summary instead -----------
-margins_summary(model_weight$all$prop_16, data = cal_subset, design = sv_design)
+
+# Varying lengths (NAs?)
 model_weight$all %>%
   map(~ margins_summary(.x, data = cal_subset, design = sv_design))
 
@@ -9,15 +10,6 @@ model_weight$all %>%
 mapply(margins_summary,
   model = model_weight$all, data = cal_subset,
   design = sv_design
-)
-
-# Clean data ===================================================================
-## dropping unused levels so margins works
-cal_subset <- cal_subset %>%
-  droplevels()
-
-cal_survey$party <- ifelse(
-  cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3
 )
 
 # Regressions: lpm and glm =====================================================
@@ -82,7 +74,7 @@ par_glm_16 <- glm(
 )
 
 # mod 3 -16
-full_glm <- glm(
+full_glm_15 <- glm(
   prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
   data = cal_subset, weight = weight_ca,
@@ -97,65 +89,47 @@ full_glm_16 <- glm(
 )
 
 ### dropping unused levels so margins works
-cal_survey$income3 <- droplevels(cal_survey$income3)
+
 cal_subset$elec_int_state <- droplevels(cal_subset$elec_int_state)
 cal_subset$covid_response <- droplevels(cal_subset$covid_response)
 
-cal_survey$party <- ifelse(
-  cal_survey$pid3 != 1 & cal_survey$pid3 != 2, 3, cal_survey$pid3
-)
-
-### margins
-m_glm <- margins(glm)
-
 # Margins calculations =========================================================
-m_glm_15 <- m_glm %>%
+m_glm_15 <- margins(full_glm_15) 
+%>%
   summary() %>%
   as.data.frame()
-m_glm_16 <- margins(glm_16) %>%
+m_glm_16 <- margins(full_glm_16) %>%
   summary() %>%
   as.data.frame()
-
-margins(glm)
-
 # Compare and export ===========================================================
 # prop 15
 stargazer(
   lpm %>% map("prop_15_num"),
   covariate.labels = covars_names, dep.var.labels = "Proposition 15",
-  out = here("tab", "lpm_15.tex")
+  out = here("tab", "lpm_prop15.tex")
 )
 
 # prop 16
 stargazer(
   lpm %>% map("prop_16_num"),
   covariate.labels = covars_names, dep.var.labels = "Proposition 16",
-  out = here("tab", "lpm_16.tex")
+  out = here("tab", "lpm_prop16.tex")
 )
 
 stargazer(
   m_glm_15,
   summary = FALSE, type = "latex",
-  out = here("tab", "m_glm_15.tex")
+  out = here("tab", "mar_glm_15.tex")
 )
 
 stargazer(
   m_glm_16,
   summary = FALSE, type = "latex",
-  out = here("tab", "m_glm_16.tex")
+  out = here("tab", "mar_glm_16.tex")
 )
 
-## comparing
-stargazer(ols, type = "text", out = "ols.tex")
-
-ols_m <- margin(ols_16)
-stargazer(ols_16, type = "text", out = "ols.tex")
-
-export_summs(ols, model_weight$all$prop_15, type = "text")
-export_summs(m_glm_16, type = "text")
-
 ## Plots to match the plot from Fisk article
-glm_15_lat <- margins(glm, variables = "race5")
+glm_15_lat <- margins(full_glm_15, variables = "race5")
 
 pdf(file = here("fig", "prop_15_ame.pdf"))
 glm_15_lat$col[glm_15_lat$race5 == "Latino"] <- "red"
@@ -163,9 +137,17 @@ plot(glm_15_lat, xaxt = "n")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
 dev.off()
 
-glm_16_lat <- margins(glm_16, variables = "race5")
+glm_16_lat <- margins(full_glm_16, variables = "race5")
 
 pdf(file = here("fig", "prop_16_ame.pdf"))
 plot(glm_16_lat, xaxt = "none")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
 dev.off()
+
+### Power Analysis =============================================================
+library(car)
+anova(full_glm_15, type = "LRT")
+eta_sq <- 13.71/(13.71+2.07+84.30+45.85+13.14+32.7+374.25+116.75+29.56)
+f_2 <- eta_sq /(1-eta_sq)
+pwr.f2.test(u = 4, v = 2201, f2 = f_2, sig.level = .05)
+
