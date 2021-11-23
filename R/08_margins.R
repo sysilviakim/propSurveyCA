@@ -15,10 +15,11 @@ mapply(margins_summary,
 # Regressions: lpm and glm =====================================================
 
 # making prop_15 and 16 numeric
-cal_subset <- cal_subset %>% mutate(
-  prop_15_num = as.numeric(prop_15),
-  prop_16_num = as.numeric(prop_16)
-)
+cal_subset <- cal_subset %>%
+  mutate(
+    prop_15_num = as.numeric(prop_15),
+    prop_16_num = as.numeric(prop_16)
+  )
 
 # dv
 y_num <- c(prop_15_num = "prop_15_num", prop_16_num = "prop_16_num")
@@ -94,8 +95,7 @@ cal_subset$elec_int_state <- droplevels(cal_subset$elec_int_state)
 cal_subset$covid_response <- droplevels(cal_subset$covid_response)
 
 # Margins calculations =========================================================
-m_glm_15 <- margins(full_glm_15) 
-%>%
+m_glm_15 <- margins(full_glm_15) %>%
   summary() %>%
   as.data.frame()
 m_glm_16 <- margins(full_glm_16) %>%
@@ -147,7 +147,7 @@ dev.off()
 ### Power Analysis =============================================================
 library(car)
 anova(full_glm_15, type = "LRT")
-eta_sq <- 13.71/(13.71+2.07+84.30+45.85+13.14+32.7+374.25+116.75+29.56)
-f_2 <- eta_sq /(1-eta_sq)
+eta_sq <- 13.71 /
+  (13.71 + 2.07 + 84.30 + 45.85 + 13.14 + 32.7 + 374.25 + 116.75 + 29.56)
+f_2 <- eta_sq / (1 - eta_sq)
 pwr.f2.test(u = 4, v = 2201, f2 = f_2, sig.level = .05)
-
