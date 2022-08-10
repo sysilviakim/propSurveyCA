@@ -36,7 +36,8 @@ models_partisan <- list(
     )
 )
 
-### Printing Tables 
+### Printing Tables --- Modified Functions from /utilities 
+
 covars_names_par <- c(
   "Gender: Male", "Age", "Race: Black", "Race: Hispanic/Latino",
   "Race: Asian", "Race: Other", "Education: HS",
@@ -92,7 +93,9 @@ stargazer_par_tex <- function(x, type = "latex", lab = c(15, 16)) {
   )
 }
 
+### Printing Two Tables - 
+
 stargazer_par_tex(models_partisan %>% map("prop_15"), lab = 15)
 stargazer_par_tex(models_partisan %>% map("prop_16"), lab = 16)
 
-summary(models_partisan$dem$prop_15)
+
