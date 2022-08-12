@@ -127,6 +127,7 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16),
   stargazer(
     x,
     omit = "Constant",
+    omit.stat = "f",
     covariate.labels = covars_names,
     label = ifelse(lab == 15, lab15, lab16),
     dep.var.labels = ifelse(lab == 15, dep15, dep16),
@@ -141,10 +142,7 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16),
     font.size = "footnotesize",
     float.env = "table",
     title = paste(
-      ifelse(
-        lab == 15, "Proposition 15",
-        ifelse(lab == 16, "Proposition 16", 0)
-      ),
+      paste("Proposition", lab),
       ifelse(subgroup == "party", "Models by Party", "Models (Full)")
     ),
     out = ifelse(lab == 15, out15, out16),
@@ -156,7 +154,7 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16),
 stargazer_tex_omit <- function(x, type = "latex", lab = c(15, 16)) {
   stargazer(
     x,
-    label = ifelse(lab == 15, "tab:reg_prop15_short", "tab:reg_prop16_short"),
+    label = paste0("tab:reg_prop", lab, "_short"),
     omit = c(
       "Constant", "gender", "age", "educ",
       "income3", "ca_region"
@@ -167,11 +165,7 @@ stargazer_tex_omit <- function(x, type = "latex", lab = c(15, 16)) {
       "Income", "CA Region"
     ),
     covariate.labels = short_covars_names,
-    dep.var.labels = ifelse(
-      lab == 15,
-      "Support Proposition 15",
-      "Support Proposition 16"
-    ),
+    dep.var.labels = paste0("Support Proposition ", lab),
     # dep.var.labels.include = FALSE,
     model.numbers = TRUE,
     star.char = c("*", "**", "***"),
@@ -182,18 +176,8 @@ stargazer_tex_omit <- function(x, type = "latex", lab = c(15, 16)) {
     no.space = TRUE,
     font.size = "footnotesize",
     float.env = "table",
-    title = paste(
-      ifelse(
-        lab == 15, "Proposition 15",
-        ifelse(lab == 16, "Proposition 16", 0)
-      ),
-      "Models"
-    ),
-    out = ifelse(
-      lab == 15,
-      here("tab", "reg_prop15_short.tex"),
-      here("tab", "reg_prop16_short.tex")
-    )
+    title = paste("Proposition", lab, "Models"),
+    out = here("tab", paste0("reg_prop", lab, "_short.tex"))
   )
 }
 
@@ -203,11 +187,7 @@ stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
     x,
     omit = "Constant",
     covariate.labels = covars_names,
-    dep.var.labels = ifelse(
-      lab == 15,
-      "Support Proposition 15",
-      "Support Proposition 16"
-    ),
+    dep.var.labels = paste0("Support Proposition ", lab),
     apply.coef = exp,
     t.auto = F,
     p.auto = F,
@@ -222,18 +202,8 @@ stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
     no.space = TRUE,
     font.size = "footnotesize",
     float.env = "table",
-    title = paste(
-      ifelse(
-        lab == 15, "Proposition 15",
-        ifelse(lab == 16, "Proposition 16", 0)
-      ),
-      "Odd-Ratios per Model"
-    ),
-    out = ifelse(
-      lab == 15,
-      here("tab", "prop15_oddratios_long.tex"),
-      here("tab", "prop16_oddratios_long.tex")
-    )
+    title = paste("Proposition", lab, "Odds-Ratios"),
+    out = here("tab", paste0("prop", lab, "_oddsratios_long.tex"))
   )
 }
 
@@ -252,26 +222,14 @@ stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
       "CA Region: Southern California (non-LA)"
     ),
     covariate.labels = covars_names,
-    dep.var.labels =
-      ifelse(
-        lab == 15,
-        "Support Proposition 15",
-        ifelse(lab == 16, "Support Proposition 16", 0)
-      ),
-    # dep.var.labels.include = TRUE,
+    dep.var.labels = paste0("Support Proposition ", lab),
     model.numbers = TRUE,
     star.char = c("*", "**", "***"),
     star.cutoffs = c(.05, .01, .001),
     digits = 3,
     header = FALSE,
     type = type,
-    title = paste(
-      ifelse(
-        lab == 15, "Proposition 15",
-        ifelse(lab == 16, "Proposition 16", 0)
-      ),
-      "Models"
-    )
+    title = paste("Proposition", lab, "Models")
   )
 }
 
@@ -295,26 +253,14 @@ stargazer_custom_omit <- function(x, type = "text", lab = c(15, 16)) {
       "CA Region"
     ),
     covariate.labels = short_covars_names,
-    dep.var.labels =
-      ifelse(
-        lab == 15,
-        "Support Proposition 15",
-        ifelse(lab == 16, "Support Proposition 16", 0)
-      ),
-    # dep.var.labels.include = TRUE,
+    dep.var.labels = paste0("Support Proposition ", lab),
     model.numbers = TRUE,
     star.char = c("*", "**", "***"),
     star.cutoffs = c(.05, .01, .001),
     digits = 3,
     header = FALSE,
     type = type,
-    title = paste(
-      ifelse(
-        lab == 15, "Proposition 15",
-        ifelse(lab == 16, "Proposition 16", 0)
-      ),
-      "Models"
-    )
+    title = paste("Proposition", lab, "Models")
   )
 }
 
@@ -324,11 +270,7 @@ stargazer_custom_odds <- function(x, type = "text", lab = c(15, 16)) {
     omit = "Constant",
     covariate.labels =
       covars_names,
-    dep.var.labels = ifelse(
-      lab == 15,
-      "Support Proposition 15",
-      "Support Proposition 16"
-    ),
+    dep.var.labels = paste0("Support Proposition ", lab),
     apply.coef = exp,
     t.auto = F,
     p.auto = F,
