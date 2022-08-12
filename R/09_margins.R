@@ -116,27 +116,34 @@ stargazer(
 )
 
 ## Plots to match the plot from Fisk article
-race_mar_15 <- m_glm_15[grep("race", m_glm_15$factor),]
+race_mar_15 <- m_glm_15[grep("race", m_glm_15$factor), ]
 
 race_mar_15$factor <- ifelse(race_mar_15$factor == "race5Asian", "Asian",
-                             ifelse(race_mar_15$factor == "race5Black",
-                                    "Black", 
-                                    ifelse(race_mar_15$factor == "race5Hispanic",
-                                           "Hispanic",
-                                           ifelse(race_mar_15$factor == "race5Other",
-                                                  "Other", NA))))
-race_mar_16 <- m_glm_16[grep("race", m_glm_16$factor),]
+  ifelse(race_mar_15$factor == "race5Black",
+    "Black",
+    ifelse(race_mar_15$factor == "race5Hispanic",
+      "Hispanic",
+      ifelse(race_mar_15$factor == "race5Other",
+        "Other", NA
+      )
+    )
+  )
+)
+race_mar_16 <- m_glm_16[grep("race", m_glm_16$factor), ]
 race_mar_16$factor <- ifelse(race_mar_16$factor == "race5Asian", "Asian",
-                             ifelse(race_mar_16$factor == "race5Black",
-                                    "Black", 
-                                    ifelse(race_mar_16$factor == "race5Hispanic",
-                                           "Hispanic",
-                                           ifelse(race_mar_16$factor == "race5Other",
-                                                  "Other", NA))))
+  ifelse(race_mar_16$factor == "race5Black",
+    "Black",
+    ifelse(race_mar_16$factor == "race5Hispanic",
+      "Hispanic",
+      ifelse(race_mar_16$factor == "race5Other",
+        "Other", NA
+      )
+    )
+  )
+)
 
-
-mar_15_plot <- ggplot(race_mar_15, aes(x=factor, y=AME, color = factor)) +
-  geom_point()+
+mar_15_plot <- ggplot(race_mar_15, aes(x = factor, y = AME, color = factor)) +
+  geom_point() +
   geom_errorbar(aes(ymin = lower, ymax = upper), width = .1) +
   labs(
     x = "Race",
@@ -162,7 +169,6 @@ mar_15_plot <- ggplot(race_mar_15, aes(x=factor, y=AME, color = factor)) +
       "Full Model, Prop. ", ifelse(grepl("15", y), 15, 16), " and Race"
     )
   )
-
 
 pdf(file = here("fig", "prop_15_ame.pdf"))
 glm_15_lat$col[glm_15_lat$race5 == "Latino"] <- "red"
@@ -170,9 +176,8 @@ plot(glm_15_lat, xaxt = "n")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
 dev.off()
 
-
-mar_16_plot <- ggplot(race_mar_16, aes(x=factor, y=AME, color = factor)) +
-  geom_point()+
+mar_16_plot <- ggplot(race_mar_16, aes(x = factor, y = AME, color = factor)) +
+  geom_point() +
   geom_errorbar(aes(ymin = lower, ymax = upper), width = .1) +
   labs(
     x = "Race",
@@ -199,12 +204,9 @@ mar_16_plot <- ggplot(race_mar_16, aes(x=factor, y=AME, color = factor)) +
     )
   )
 
-
-
 pdf(file = here("fig", "mar_15_plot.pdf"))
 print(mar_15_plot)
 dev.off()
-
 
 pdf(file = here("fig", "prop_16_ame.pdf"))
 plot(glm_16_lat, xaxt = "none")
@@ -212,7 +214,6 @@ axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
 
 pdf(file = here("fig", "mar_16_plot.pdf"))
 print(mar_16_plot)
-
 dev.off()
 
 ### Power Analysis =============================================================
