@@ -1,7 +1,7 @@
 source(here::here("R", "utilities.R"))
 
 # Data import, filter for CA voters, and rename variables ======================
-cal_survey <- read.csv(
+cal_survey <- read_csv(
   here("data", "raw", "CALTECH_Post_Election_Survey_2020.csv")
 ) %>%
   filter(inputstate == 6) %>%
