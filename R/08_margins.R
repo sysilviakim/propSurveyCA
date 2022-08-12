@@ -87,26 +87,44 @@ m_glm_16 <- margins(full_glm_16) %>%
 # Export LPM results ===========================================================
 stargazer(
   lpm %>% map("prop_15_num"),
-  covariate.labels = covars_names, dep.var.labels = "Proposition 15",
+  covariate.labels = covars_names,
+  dep.var.labels = "Proposition 15", digits = 3,
   out = here("tab", "lpm_prop15.tex")
 )
 stargazer(
   lpm %>% map("prop_16_num"),
-  covariate.labels = covars_names, dep.var.labels = "Proposition 16",
+  covariate.labels = covars_names,
+  dep.var.labels = "Proposition 16",
   out = here("tab", "lpm_prop16.tex")
 )
 
 # Export margins results =======================================================
-stargazer(
-  m_glm_15,
-  summary = FALSE, type = "latex",
-  out = here("tab", "mar_glm_15.tex")
-)
-stargazer(
-  m_glm_16,
-  summary = FALSE, type = "latex",
-  out = here("tab", "mar_glm_16.tex")
-)
+mar_export <- function(x, y = 15) {
+  print(
+    left_join(x, as_tibble(covars_names, rownames = "factor")) %>%
+      select(-factor) %>%
+      rename(Variable = value, `s.e.` = SE, `Z-score` = z, `p-value` = p) %>%
+      rowwise() %>%
+      mutate(
+        `95% CI` = paste0(
+          "[", formatC(lower, digits = 3, format = "f"),
+          ", ", formatC(upper, digits = 3, format = "f"), "]"
+        )
+      ) %>%
+      ungroup() %>%
+      select(-lower, -upper) %>%
+      select(Variable, everything()) %>%
+      xtable(digits = 3),
+    file = here("tab", paste0("mar_glm_", y, ".tex")),
+    include.rownames = FALSE,
+    comment = FALSE,
+    floating = FALSE,
+    booktabs = TRUE
+  )
+}
+
+mar_export(m_glm_15, y = 15)
+mar_export(m_glm_16, y = 16)
 
 # Plots to match the plot from Fisk article ====================================
 mar_temp <- function(x, y = 15) {
@@ -115,8 +133,8 @@ mar_temp <- function(x, y = 15) {
     mutate(factor = gsub("race5", "", factor)) %>%
     rename(conf.low = lower, conf.high = upper, term = factor, estimate = AME) %>%
     race_highlight(
-      y = y, 
-      limits = c(-0.2, 0.3), 
+      y = y,
+      limits = c(-0.2, 0.3),
       breaks = seq(-0.2, 0.3, 0.1),
       my_theme = FALSE,
       ylab = "Average Marginal Effects (95% C.I.)"
@@ -128,7 +146,7 @@ mar_16_plot <- mar_temp(m_glm_16, y = 16)
 pdf(file = here("fig", "mar_15_ame.pdf"), width = 3.5, height = 3)
 print(
   pdf_default(mar_15_plot) +
-    labs(title = NULL) + 
+    labs(title = NULL) +
     theme(axis.title = element_blank(), legend.position = "none")
 )
 dev.off()
@@ -136,15 +154,7 @@ dev.off()
 pdf(file = here("fig", "mar_16_ame.pdf"), width = 4, height = 3)
 print(
   pdf_default(mar_16_plot) +
-    labs(title = NULL) + 
+    labs(title = NULL) +
     theme(axis.title = element_blank(), legend.position = "none")
 )
 dev.off()
-
-# Power Analysis ===============================================================
-library(car)
-anova(full_glm_15, type = "LRT")
-eta_sq <- 13.71 /
-  (13.71 + 2.07 + 84.30 + 45.85 + 13.14 + 32.7 + 374.25 + 116.75 + 29.56)
-f_2 <- eta_sq / (1 - eta_sq)
-pwr.f2.test(u = 4, v = 2201, f2 = f_2, sig.level = .05)

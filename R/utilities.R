@@ -32,7 +32,53 @@ if (!dir.exists(here("R", "eda"))) {
   dir.create(here("R", "eda"))
 }
 
+# Helper vectors ===============================================================
+# covariate labels as vectors
+covars_names <- c(
+  genderM = "Gender: Male", 
+  age = "Age", 
+  race5Black = "Race: Black", 
+  race5Latino = "Race: Hispanic/Latino",
+  race5Asian = "Race: Asian", 
+  race5Other = "Race: Other", 
+  educHS = "Education: HS",
+  `educSome college` = "Education: Some College", 
+  `educ2-yr` = "Education: 2-yr",
+  `educ4-yr` = "Education: 4-yr", 
+  `educPost-grad` = "Education: Post-grad",
+  `income350-100k` = "Income: 50-100k",
+  `income3100k+` = "Income: 100k+",
+  `income3Prefer not to say` = "Income: Prefer not to say",
+  `ca_regionCentral valley/inland` = "CA Region: Central Valley/Inland",
+  ca_regionCoastal = "CA Region: Coastal",
+  ca_regionLA = "CA Region: LA",
+  `ca_regionSoCal (non-LA)` = "CA Region: Southern California (non-LA)",
+  partyRep = "Party: Rep", 
+  partyOther = "Party: Other",
+  `elec_int_stateSomewhat confident` = "Election Integrity: Somewhat confident",
+  `elec_int_stateNot too confident` = "Election Integrity: Not too confident",
+  `elec_int_stateNot at all confident` = 
+    "Electoral Integrity: Not at all confident",
+  `elec_int_stateDon't know` = "Electoral Integrity: Don't know",
+  `covid_responseLess effective than others` = 
+    "COVID Response: Less effective than others",
+  `covid_responseAbout as effective` = "COVID Response: About as effective",
+  constant = "Constant"
+)
+
+short_covars_names <- c(
+  "Race: Black", "Race: Hispanic/Latino",
+  "Race: Asian", "Race: Other", "Party: Rep", "Party: Other",
+  "Election Integrity: Somewhat confident",
+  "Election Integrity: Not too confident",
+  "Electoral Integrity: Not at all confident",
+  "Electoral Integrity: Don't know",
+  "COVID Response: Less effective than others",
+  "COVID Response: About as effective"
+)
+
 # Functions ====================================================================
+## glm function
 reg_form <- function(x, vars, data, sv_design, survey = FALSE) {
   if (survey == TRUE) {
     svyglm(
@@ -55,7 +101,7 @@ reg_form <- function(x, vars, data, sv_design, survey = FALSE) {
   }
 }
 
-# lpm function
+## lpm function
 reg_form_lpm <- function(x, vars, data) {
   lm(paste(x, "~", paste(unlist(var_list_lpm[vars]),
     collapse = " + "
@@ -63,41 +109,6 @@ reg_form_lpm <- function(x, vars, data) {
   data = cal_subset, weight = weight_ca
   )
 }
-
-# to make the latex tables - regressions
-## functions have been modified for specific layout
-
-# covariate labels as vectors
-covars_names <- c(
-  "Gender: Male", "Age", "Race: Black", "Race: Hispanic/Latino",
-  "Race: Asian", "Race: Other", "Education: HS",
-  "Education: Some College", "Education: 2-yr",
-  "Education: 4-yr", "Education: Post-grad",
-  "Income: 50-100k", "Income: 100k+",
-  "Income: Prefer not to say",
-  "CA Region: Central Valley/Inland", "CA Region: Coastal",
-  "CA Region: LA",
-  "CA Region: Southern California (non-LA)",
-  "Party: Rep", "Party: Other",
-  "Election Integrity: Somewhat confident",
-  "Election Integrity: Not too confident",
-  "Electoral Integrity: Not at all confident",
-  "Electoral Integrity: Don't know",
-  "COVID Response: Less effective than others",
-  "COVID Response: About as effective",
-  "Constant"
-)
-
-short_covars_names <- c(
-  "Race: Black", "Race: Hispanic/Latino",
-  "Race: Asian", "Race: Other", "Party: Rep", "Party: Other",
-  "Election Integrity: Somewhat confident",
-  "Election Integrity: Not too confident",
-  "Electoral Integrity: Not at all confident",
-  "Electoral Integrity: Don't know",
-  "COVID Response: Less effective than others",
-  "COVID Response: About as effective"
-)
 
 ## Custom Stargazer Functions
 stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16),
@@ -186,7 +197,7 @@ stargazer_tex_omit <- function(x, type = "latex", lab = c(15, 16)) {
   )
 }
 
-## function to create odd-ratio latex tables
+## function to create odds-ratio latex tables
 stargazer_odds_tex <- function(x, type = "latex", lab = c(15, 16)) {
   stargazer(
     x,
@@ -240,17 +251,6 @@ stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
       "CA Region: LA",
       "CA Region: Southern California (non-LA)"
     ),
-    # omit.labels = c(
-    #   "Constant","Gender: Male", "Age", "Race: Black", "Race: Hispanic/Latino",
-    #   "Race: Asian", "Race: Other", "Education: HS",
-    #   "Education: Some College", "Education: 2-yr",
-    #   "Education: 4-yr", "Education: Post-grad",
-    #   "Income: 50-100k", "Income: 100k+",
-    #   "Income: Prefer not to say",
-    #   "CA Region: Central Valley/Inland", "CA Region: Coastal",
-    #   "CA Region: LA",
-    #   "CA Region: Southern California (non-LA)"
-    # ),
     covariate.labels = covars_names,
     dep.var.labels =
       ifelse(
@@ -343,6 +343,7 @@ stargazer_custom_odds <- function(x, type = "text", lab = c(15, 16)) {
   )
 }
 
+## misc.
 desc_table <- function(x, y, variable) {
   prop_labels %>%
     map_dfr(
