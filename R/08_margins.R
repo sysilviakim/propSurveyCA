@@ -1,17 +1,4 @@
 source(here::here("R", "05_reg_prelim.R"))
-
-### margins -- use purrr map and margins_summary instead -----------
-
-# Varying lengths (NAs?)
-model_weight$all %>%
-  map(~ margins_summary(.x, data = cal_subset, design = sv_design))
-
-## doesn't recognize survey.design object
-mapply(margins_summary,
-  model = model_weight$all, data = cal_subset,
-  design = sv_design
-)
-
 # Regressions: lpm and glm =====================================================
 
 # making prop_15 and 16 numeric
@@ -74,7 +61,7 @@ par_glm_16 <- glm(
   family = "quasibinomial"
 )
 
-# mod 3 -16
+# mod 3 -15
 full_glm_15 <- glm(
   prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
@@ -129,7 +116,59 @@ stargazer(
 )
 
 ## Plots to match the plot from Fisk article
-glm_15_lat <- margins(full_glm_15, variables = "race5")
+race_mar_15 <- m_glm_15[grep("race", m_glm_15$factor), ]
+
+race_mar_15$factor <- ifelse(race_mar_15$factor == "race5Asian", "Asian",
+  ifelse(race_mar_15$factor == "race5Black",
+    "Black",
+    ifelse(race_mar_15$factor == "race5Hispanic",
+      "Hispanic",
+      ifelse(race_mar_15$factor == "race5Other",
+        "Other", NA
+      )
+    )
+  )
+)
+race_mar_16 <- m_glm_16[grep("race", m_glm_16$factor), ]
+race_mar_16$factor <- ifelse(race_mar_16$factor == "race5Asian", "Asian",
+  ifelse(race_mar_16$factor == "race5Black",
+    "Black",
+    ifelse(race_mar_16$factor == "race5Hispanic",
+      "Hispanic",
+      ifelse(race_mar_16$factor == "race5Other",
+        "Other", NA
+      )
+    )
+  )
+)
+
+mar_15_plot <- ggplot(race_mar_15, aes(x = factor, y = AME, color = factor)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = .1) +
+  labs(
+    x = "Race",
+    y = "Average Marginal Effects (95% C.I.)",
+    color = "Race"
+  ) +
+  scale_colour_manual(
+    values = c(
+      "Black" = "gray24",
+      "Hispanic" = "red1",
+      "Asian" = "gray24",
+      "Other" = "gray24"
+    )
+  ) +
+  geom_hline(yintercept = 0) +
+  scale_y_continuous(
+    labels =
+      scales::number_format(accuracy = 0.01), oob = rescale_none
+  ) +
+  annotate("rect", fill = "lightgray", alpha = 0.4) +
+  ggtitle(
+    paste0(
+      "Full Model, Prop. ", ifelse(grepl("15", y), 15, 16), " and Race"
+    )
+  )
 
 pdf(file = here("fig", "prop_15_ame.pdf"))
 glm_15_lat$col[glm_15_lat$race5 == "Latino"] <- "red"
@@ -137,11 +176,44 @@ plot(glm_15_lat, xaxt = "n")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
 dev.off()
 
-glm_16_lat <- margins(full_glm_16, variables = "race5")
+mar_16_plot <- ggplot(race_mar_16, aes(x = factor, y = AME, color = factor)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = .1) +
+  labs(
+    x = "Race",
+    y = "Average Marginal Effects (95% C.I.)",
+    color = "Race"
+  ) +
+  scale_colour_manual(
+    values = c(
+      "Black" = "gray24",
+      "Hispanic" = "red1",
+      "Asian" = "gray24",
+      "Other" = "gray24"
+    )
+  ) +
+  geom_hline(yintercept = 0) +
+  scale_y_continuous(
+    labels =
+      scales::number_format(accuracy = 0.01), oob = rescale_none
+  ) +
+  annotate("rect", fill = "lightgray", alpha = 0.4) +
+  ggtitle(
+    paste0(
+      "Full Model, Prop. ", ifelse(grepl("15", y), 15, 16), " and Race"
+    )
+  )
+
+pdf(file = here("fig", "mar_15_plot.pdf"))
+print(mar_15_plot)
+dev.off()
 
 pdf(file = here("fig", "prop_16_ame.pdf"))
 plot(glm_16_lat, xaxt = "none")
 axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
+
+pdf(file = here("fig", "mar_16_plot.pdf"))
+print(mar_16_plot)
 dev.off()
 
 ### Power Analysis =============================================================
