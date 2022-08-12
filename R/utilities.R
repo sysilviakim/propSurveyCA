@@ -374,13 +374,14 @@ tidy_race <- function(x) {
 race_highlight <- function(x, y,
                            my_theme = TRUE,
                            limits = c(-.5, 2.0),
-                           breaks = seq(-.5, 2.0, by = .5)) {
+                           breaks = seq(-.5, 2.0, by = .5),
+                           ylab = "Estimated Support (95% C.I.)") {
   p <- ggplot(x, aes(term, estimate, color = term)) +
     geom_point() +
     geom_pointrange(size = 1.2, aes(ymin = conf.low, ymax = conf.high)) +
     labs(
       x = "Race",
-      y = "Estimated Support (95% C.I.)",
+      y = ylab,
       color = "Race"
     ) +
     scale_colour_manual(

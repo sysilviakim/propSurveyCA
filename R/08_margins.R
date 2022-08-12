@@ -1,7 +1,8 @@
 source(here::here("R", "05_reg_prelim.R"))
-# Regressions: lpm and glm =====================================================
 
-# making prop_15 and 16 numeric
+# Prep for regressions =========================================================
+
+# Making prop_15 and 16 numeric
 cal_subset <- cal_subset %>%
   mutate(
     prop_15_num = as.numeric(prop_15),
@@ -11,7 +12,7 @@ cal_subset <- cal_subset %>%
 # dv
 y_num <- c(prop_15_num = "prop_15_num", prop_16_num = "prop_16_num")
 
-# list of models
+# List of models
 var_list_lpm <- list(
   demo_geo = c("gender", "age", "race5", "educ", "income3", "ca_region"),
   party = c("gender", "age", "race5", "educ", "income3", "ca_region", "party"),
@@ -21,39 +22,35 @@ var_list_lpm <- list(
   )
 )
 
-# LPM
+# LPM ==========================================================================
 lpm <- list(
   demo_geo = y_num %>% map(~ reg_form_lpm(.x, vars = 1)),
   demo_geo_party = y_num %>% map(~ reg_form_lpm(.x, vars = 2)),
   all = y_num %>% map(~ reg_form_lpm(.x, vars = 3))
 )
 
-## GLM manual for marginal effects
-# mod 1 - 15
+## GLM manual for marginal effects =============================================
+## (class "svyglm" does not work with margins)
+
+## Model 1
 demo_glm <- glm(
   prop_15 ~ gender + age + race5 + educ + income3 + ca_region,
   data = cal_subset, weight = weight_ca,
   family = "quasibinomial"
 )
-
-# 16
-
 demo_glm_16 <- glm(
   prop_16 ~ gender + age + race5 + educ + income3 + ca_region,
   data = cal_subset, weight = weight_ca,
   family = "quasibinomial"
 )
 
-# mod 2 - 15
-
+## Model 2
 par_glm <- glm(
   prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
   data = cal_subset, weight = weight_ca,
   family = "quasibinomial"
 )
-
-#- 16 
 par_glm_16 <- glm(
   prop_16 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
@@ -61,23 +58,21 @@ par_glm_16 <- glm(
   family = "quasibinomial"
 )
 
-# mod 3 -15
+## Model 3
 full_glm_15 <- glm(
   prop_15 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
   data = cal_subset, weight = weight_ca,
   family = "quasibinomial"
 )
-# 16
-
 full_glm_16 <- glm(
   prop_16 ~ gender + age + race5 + educ + income3 + ca_region + party +
     elec_int_state + covid_response,
-  data = cal_subset, weight = weight_ca, family = "quasibinomial"
+  data = cal_subset, weight = weight_ca,
+  family = "quasibinomial"
 )
 
-### dropping unused levels so margins works
-
+## Dropping unused levels so margins works
 cal_subset$elec_int_state <- droplevels(cal_subset$elec_int_state)
 cal_subset$covid_response <- droplevels(cal_subset$covid_response)
 
@@ -88,135 +83,65 @@ m_glm_15 <- margins(full_glm_15) %>%
 m_glm_16 <- margins(full_glm_16) %>%
   summary() %>%
   as.data.frame()
-# Compare and export ===========================================================
-# prop 15
+
+# Export LPM results ===========================================================
 stargazer(
   lpm %>% map("prop_15_num"),
   covariate.labels = covars_names, dep.var.labels = "Proposition 15",
   out = here("tab", "lpm_prop15.tex")
 )
-
-# prop 16
 stargazer(
   lpm %>% map("prop_16_num"),
   covariate.labels = covars_names, dep.var.labels = "Proposition 16",
   out = here("tab", "lpm_prop16.tex")
 )
 
+# Export margins results =======================================================
 stargazer(
   m_glm_15,
   summary = FALSE, type = "latex",
   out = here("tab", "mar_glm_15.tex")
 )
-
 stargazer(
   m_glm_16,
   summary = FALSE, type = "latex",
   out = here("tab", "mar_glm_16.tex")
 )
 
-## Plots to match the plot from Fisk article
-race_mar_15 <- m_glm_15[grep("race", m_glm_15$factor), ]
-
-race_mar_15$factor <- ifelse(race_mar_15$factor == "race5Asian", "Asian",
-  ifelse(race_mar_15$factor == "race5Black",
-    "Black",
-    ifelse(race_mar_15$factor == "race5Hispanic",
-      "Hispanic",
-      ifelse(race_mar_15$factor == "race5Other",
-        "Other", NA
-      )
+# Plots to match the plot from Fisk article ====================================
+mar_temp <- function(x, y = 15) {
+  x %>%
+    filter(grepl("race", factor)) %>%
+    mutate(factor = gsub("race5", "", factor)) %>%
+    rename(conf.low = lower, conf.high = upper, term = factor, estimate = AME) %>%
+    race_highlight(
+      y = y, 
+      limits = c(-0.2, 0.3), 
+      breaks = seq(-0.2, 0.3, 0.1),
+      my_theme = FALSE,
+      ylab = "Average Marginal Effects (95% C.I.)"
     )
-  )
+}
+mar_15_plot <- mar_temp(m_glm_15, y = 15)
+mar_16_plot <- mar_temp(m_glm_16, y = 16)
+
+pdf(file = here("fig", "mar_15_ame.pdf"), width = 3.5, height = 3)
+print(
+  pdf_default(mar_15_plot) +
+    labs(title = NULL) + 
+    theme(axis.title = element_blank(), legend.position = "none")
 )
-race_mar_16 <- m_glm_16[grep("race", m_glm_16$factor), ]
-race_mar_16$factor <- ifelse(race_mar_16$factor == "race5Asian", "Asian",
-  ifelse(race_mar_16$factor == "race5Black",
-    "Black",
-    ifelse(race_mar_16$factor == "race5Hispanic",
-      "Hispanic",
-      ifelse(race_mar_16$factor == "race5Other",
-        "Other", NA
-      )
-    )
-  )
+dev.off()
+
+pdf(file = here("fig", "mar_16_ame.pdf"), width = 4, height = 3)
+print(
+  pdf_default(mar_16_plot) +
+    labs(title = NULL) + 
+    theme(axis.title = element_blank(), legend.position = "none")
 )
-
-mar_15_plot <- ggplot(race_mar_15, aes(x = factor, y = AME, color = factor)) +
-  geom_point() +
-  geom_errorbar(aes(ymin = lower, ymax = upper), width = .1) +
-  labs(
-    x = "Race",
-    y = "Average Marginal Effects (95% C.I.)",
-    color = "Race"
-  ) +
-  scale_colour_manual(
-    values = c(
-      "Black" = "gray24",
-      "Hispanic" = "red1",
-      "Asian" = "gray24",
-      "Other" = "gray24"
-    )
-  ) +
-  geom_hline(yintercept = 0) +
-  scale_y_continuous(
-    labels =
-      scales::number_format(accuracy = 0.01), oob = rescale_none
-  ) +
-  annotate("rect", fill = "lightgray", alpha = 0.4) +
-  ggtitle(
-    paste0(
-      "Full Model, Prop. ", ifelse(grepl("15", y), 15, 16), " and Race"
-    )
-  )
-
-pdf(file = here("fig", "prop_15_ame.pdf"))
-glm_15_lat$col[glm_15_lat$race5 == "Latino"] <- "red"
-plot(glm_15_lat, xaxt = "n")
-axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
 dev.off()
 
-mar_16_plot <- ggplot(race_mar_16, aes(x = factor, y = AME, color = factor)) +
-  geom_point() +
-  geom_errorbar(aes(ymin = lower, ymax = upper), width = .1) +
-  labs(
-    x = "Race",
-    y = "Average Marginal Effects (95% C.I.)",
-    color = "Race"
-  ) +
-  scale_colour_manual(
-    values = c(
-      "Black" = "gray24",
-      "Hispanic" = "red1",
-      "Asian" = "gray24",
-      "Other" = "gray24"
-    )
-  ) +
-  geom_hline(yintercept = 0) +
-  scale_y_continuous(
-    labels =
-      scales::number_format(accuracy = 0.01), oob = rescale_none
-  ) +
-  annotate("rect", fill = "lightgray", alpha = 0.4) +
-  ggtitle(
-    paste0(
-      "Full Model, Prop. ", ifelse(grepl("15", y), 15, 16), " and Race"
-    )
-  )
-
-pdf(file = here("fig", "mar_15_plot.pdf"))
-print(mar_15_plot)
-dev.off()
-
-pdf(file = here("fig", "prop_16_ame.pdf"))
-plot(glm_16_lat, xaxt = "none")
-axis(1, at = seq(1, 4, 1), labels = c("Black", "Latino", "Asian", "Other"))
-
-pdf(file = here("fig", "mar_16_plot.pdf"))
-print(mar_16_plot)
-dev.off()
-
-### Power Analysis =============================================================
+# Power Analysis ===============================================================
 library(car)
 anova(full_glm_15, type = "LRT")
 eta_sq <- 13.71 /
