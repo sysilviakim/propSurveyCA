@@ -101,21 +101,24 @@ short_covars_names <- c(
 
 ## Custom Stargazer Functions
 stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16),
+                                 subgroup = "none",
                                  out15 = here("tab", "reg_prop15_long.tex"),
                                  out16 = here("tab", "reg_prop16_long.tex"),
                                  lab15 = "tab:reg_prop15_long",
                                  lab16 = "tab:reg_prop16_long", 
+                                 dep15 = "Support Proposition 15",
+                                 dep16 = "Support Proposition 16",
                                  ...) {
+  if (subgroup == "party") {
+    dep15 <- paste0(dep15, " by Party")
+    dep16 <- paste0(dep16, " by Party")
+  }
   stargazer(
     x,
     omit = "Constant",
     covariate.labels = covars_names,
     label = ifelse(lab == 15, lab15, lab16),
-    dep.var.labels = ifelse(
-      lab == 15,
-      "Support Proposition 15",
-      "Support Proposition 16"
-    ),
+    dep.var.labels = ifelse(lab == 15, dep15, dep16),
     # dep.var.labels.include = FALSE,
     model.numbers = TRUE,
     star.char = c("*", "**", "***"),
@@ -131,7 +134,7 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16),
         lab == 15, "Proposition 15",
         ifelse(lab == 16, "Proposition 16", 0)
       ),
-      "Models"
+      ifelse(subgroup == "party", "Models by Party", "Models (Full)")
     ),
     out = ifelse(lab == 15, out15, out16),
     ...

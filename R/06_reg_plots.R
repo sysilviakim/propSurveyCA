@@ -44,7 +44,8 @@ stargazer_custom_tex(
   out16 = here("tab", "partisan_prop16_long.tex"),
   lab15 = "tab:partisan_prop15_long",
   lab16 = "tab:partisan_prop16_long",
-  column.labels = c("Dem", "Rep", "Other")
+  column.labels = c("Dem", "Rep", "Other"),
+  subgroup = "party"
 )
 stargazer_custom_tex(
   all_by_party %>% map("prop_16"),
@@ -53,7 +54,8 @@ stargazer_custom_tex(
   out16 = here("tab", "partisan_prop16_long.tex"),
   lab15 = "tab:partisan_prop15_long",
   lab16 = "tab:partisan_prop16_long",
-  column.labels = c("Dem", "Rep", "Other")
+  column.labels = c("Dem", "Rep", "Other"),
+  subgroup = "party"
 )
 
 # Export plots =================================================================
