@@ -57,15 +57,17 @@ reg_form <- function(x, vars, data, sv_design, survey = FALSE) {
 
 # lpm function
 reg_form_lpm <- function(x, vars, data) {
-  lm(paste(x, "~", paste(unlist(var_list_lpm[vars]), 
-                   collapse = " + ")),
-  data = cal_subset, weight = weight_ca)
+  lm(paste(x, "~", paste(unlist(var_list_lpm[vars]),
+    collapse = " + "
+  )),
+  data = cal_subset, weight = weight_ca
+  )
 }
 
 # to make the latex tables - regressions
 ## functions have been modified for specific layout
 
-# covariate labels as vectors 
+# covariate labels as vectors
 covars_names <- c(
   "Gender: Male", "Age", "Race: Black", "Race: Hispanic/Latino",
   "Race: Asian", "Race: Other", "Education: HS",
@@ -76,7 +78,7 @@ covars_names <- c(
   "CA Region: Central Valley/Inland", "CA Region: Coastal",
   "CA Region: LA",
   "CA Region: Southern California (non-LA)",
-  "Party: Rep","Party: Other",
+  "Party: Rep", "Party: Other",
   "Election Integrity: Somewhat confident",
   "Election Integrity: Not too confident",
   "Electoral Integrity: Not at all confident",
@@ -98,12 +100,17 @@ short_covars_names <- c(
 )
 
 ## Custom Stargazer Functions
-stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
+stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16),
+                                 out15 = here("tab", "reg_prop15_long.tex"),
+                                 out16 = here("tab", "reg_prop16_long.tex"),
+                                 lab15 = "tab:reg_prop15_long",
+                                 lab16 = "tab:reg_prop16_long", 
+                                 ...) {
   stargazer(
     x,
     omit = "Constant",
     covariate.labels = covars_names,
-    label = ifelse(lab == 15, "tab:reg_prop15_long", "tab:reg_prop16_long"),
+    label = ifelse(lab == 15, lab15, lab16),
     dep.var.labels = ifelse(
       lab == 15,
       "Support Proposition 15",
@@ -126,11 +133,8 @@ stargazer_custom_tex <- function(x, type = "latex", lab = c(15, 16)) {
       ),
       "Models"
     ),
-    out = ifelse(
-      lab == 15,
-      here("tab", "reg_prop15_long.tex"),
-      here("tab", "reg_prop16_long.tex")
-    )
+    out = ifelse(lab == 15, out15, out16),
+    ...
   )
 }
 
@@ -260,7 +264,7 @@ stargazer_custom <- function(x, type = "text", lab = c(15, 16)) {
     type = type,
     title = paste(
       ifelse(
-        lab == 15, "Proposition 15", 
+        lab == 15, "Proposition 15",
         ifelse(lab == 16, "Proposition 16", 0)
       ),
       "Models"
@@ -364,7 +368,7 @@ tidy_race <- function(x) {
     mutate(term = gsub("race5", "", term))
 }
 
-race_highlight <- function(x, y, 
+race_highlight <- function(x, y,
                            my_theme = TRUE,
                            limits = c(-.5, 2.0),
                            breaks = seq(-.5, 2.0, by = .5)) {
@@ -396,7 +400,7 @@ race_highlight <- function(x, y,
         "Full Model, Prop. ", ifelse(grepl("15", y), 15, 16), " and Race"
       )
     )
-  
+
   if (my_theme) {
     p +
       theme(

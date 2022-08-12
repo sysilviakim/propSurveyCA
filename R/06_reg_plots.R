@@ -7,29 +7,56 @@ p_list <- model_weight$all %>%
 
 p_by_gen <- all_by_gen %>%
   map(
-    function(x) x %>%
-      map(tidy_race) %>%
-      imap(
-        ~ race_highlight(
-          .x, .y, my_theme = FALSE, 
-          limits = c(-4, 6), breaks = seq(-4, 6, by = 1)
+    function(x) {
+      x %>%
+        map(tidy_race) %>%
+        imap(
+          ~ race_highlight(
+            .x, .y,
+            my_theme = FALSE,
+            limits = c(-4, 6), breaks = seq(-4, 6, by = 1)
+          )
         )
-      )
+    }
   )
 
 p_by_party <- all_by_party %>%
   map(
-    function(x) x %>%
-      map(tidy_race) %>%
-      imap(
-        ~ race_highlight(
-          .x, .y, my_theme = FALSE, 
-          limits = c(-4, 6), breaks = seq(-4, 6, by = 1)
+    function(x) {
+      x %>%
+        map(tidy_race) %>%
+        imap(
+          ~ race_highlight(
+            .x, .y,
+            my_theme = FALSE,
+            limits = c(-4, 6), breaks = seq(-4, 6, by = 1)
+          )
         )
-      )
+    }
   )
 
-# Export =======================================================================
+# Export regression tables =====================================================
+covars_names <- setdiff(covars_names, c("Party: Rep", "Party: Other"))
+stargazer_custom_tex(
+  all_by_party %>% map("prop_15"),
+  lab = 15,
+  out15 = here("tab", "partisan_prop15_long.tex"),
+  out16 = here("tab", "partisan_prop16_long.tex"),
+  lab15 = "tab:partisan_prop15_long",
+  lab16 = "tab:partisan_prop16_long",
+  column.labels = c("Dem", "Rep", "Other")
+)
+stargazer_custom_tex(
+  all_by_party %>% map("prop_16"),
+  lab = 16,
+  out15 = here("tab", "partisan_prop15_long.tex"),
+  out16 = here("tab", "partisan_prop16_long.tex"),
+  lab15 = "tab:partisan_prop15_long",
+  lab16 = "tab:partisan_prop16_long",
+  column.labels = c("Dem", "Rep", "Other")
+)
+
+# Export plots =================================================================
 pdf(file = here("fig", "plot16_upd.pdf"), width = 3.5, height = 3)
 print(plot_nolegend(pdf_default(p_list$prop_16)))
 dev.off()
