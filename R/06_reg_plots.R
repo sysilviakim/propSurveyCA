@@ -72,7 +72,14 @@ within(p_by_gen, rm("Silent (75+)")) %>%
   map("prop_15") %>%
   map(pdf_default) %>%
   imap(~ .x + ggtitle(.y)) %>%
-  map(~ .x + theme(axis.title = element_blank(), legend.position = "none")) %>%
+  map(
+    ~ .x + 
+      theme(
+        axis.title = element_blank(), 
+        legend.position = "none",
+        plot.title = element_text(size = 10)
+      )
+  ) %>%
   Kmisc::grid_arrange_shared_legend(list = ., ncol = 2, nrow = 2)
 dev.off()
 
@@ -81,7 +88,14 @@ within(p_by_gen, rm("Silent (75+)")) %>%
   map("prop_16") %>%
   map(pdf_default) %>%
   imap(~ .x + ggtitle(.y)) %>%
-  map(~ .x + theme(axis.title = element_blank(), legend.position = "none")) %>%
+  map(
+    ~ .x + 
+      theme(
+        axis.title = element_blank(), 
+        legend.position = "none",
+        plot.title = element_text(size = 10)
+      )
+  ) %>%
   Kmisc::grid_arrange_shared_legend(list = ., ncol = 2, nrow = 2)
 dev.off()
 
