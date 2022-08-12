@@ -85,18 +85,25 @@ m_glm_16 <- margins(full_glm_16) %>%
   as.data.frame()
 
 # Export LPM results ===========================================================
-stargazer(
-  lpm %>% map("prop_15_num"),
-  covariate.labels = covars_names,
-  dep.var.labels = "Proposition 15", digits = 3,
-  out = here("tab", "lpm_prop15.tex")
-)
-stargazer(
-  lpm %>% map("prop_16_num"),
-  covariate.labels = covars_names,
-  dep.var.labels = "Proposition 16",
-  out = here("tab", "lpm_prop16.tex")
-)
+lpm_export <- function(x, y = 15) {
+  stargazer(
+    x,
+    covariate.labels = covars_names,
+    dep.var.labels = paste0("Proposition ", y), digits = 3,
+    omit = "Constant",
+    omit.stat = "f",
+    no.space = TRUE,
+    font.size = "footnotesize",
+    float.env = "table",
+    title = paste0(
+      "Proposition ", y, " Linear Probability Models"
+    ),
+    out = here("tab", paste0("lpm_prop", y, ".tex"))
+  )
+}
+
+lpm_export(lpm %>% map("prop_15_num"), y = 15)
+lpm_export(lpm %>% map("prop_16_num"), y = 16)
 
 # Export margins results =======================================================
 mar_export <- function(x, y = 15) {
