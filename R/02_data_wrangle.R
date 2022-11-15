@@ -1,5 +1,5 @@
 source(here::here("R", "utilities.R"))
-load(here("data", "tidy", "cal_survey_raw.Rda"))
+load(here("data", "tidy", "caltech_survey_subset.csv"))
 
 # Restructure variables from int to factors ====================================
 cal_survey <- cal_survey %>%
